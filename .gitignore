@@ -1,0 +1,8 @@
+# auto-generated code
+Makefile
+src/auto/*
+
+# object files
+*.o
+*/*.o
+*/*/*.o

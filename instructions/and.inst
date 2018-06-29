@@ -1,0 +1,34 @@
+@begin AND
+@asm AND Rm,Rn
+@abstract Rn&Rm->Rn
+@code 0010nnnnmmmm1001
+@type nm
+
+R[n]&=R[m];
+PC+=2;
+
+@end AND
+
+@begin ANDI
+@asm AND #imm,R0
+@abstract R0&imm->R0
+@code 11001001iiiiiiii
+@type i
+
+R[0]&=ZERO_EXTEND8(i);
+PC+=2;
+
+@end ANDI
+
+@begin ANDM
+@asm AND.B #imm,@(R0,GBR)
+@abstract (R0+GBR)&imm->(R0+GBR)
+@code 11001101iiiiiiii
+@type i
+
+longword_t t=read_byte(GBR+R[0]);
+t&=ZERO_EXTEND8(i);
+write_byte(GBR+R[0], t);
+PC+=2;
+
+@end ANDM

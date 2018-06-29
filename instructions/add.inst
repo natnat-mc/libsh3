@@ -1,0 +1,55 @@
+@begin ADD
+@asm ADD Rm,Rn
+@abstract Rn+Rm->Rn
+@code 0011nnnnmmmm1100
+@type nm
+
+R[n]+=R[m];
+PC+=2
+
+@end ADD
+
+@begin ADDI
+@asm ADD #imm,Rn
+@abstract Rn+imm->Rn
+@code 0111nnnniiiiiiii
+@type ni
+
+R[n]+=SIGN_EXTEND8(i);
+PC+=2;
+
+@end ADDI
+
+@begin ADDC
+@asm ADDC Rm,Rn
+@abstract Rn+Rm+T->Rn, carry->T
+@code 0011nnnnmmmm1110
+@type nm
+
+longword_t t0, t1;
+t1=R[n]+R[m];
+t0=R[n];
+R[n]=t1+T;
+T=(t0>t1)||(t1>R[n]);
+PC+=2;
+
+@end ADDC
+
+@begin ADDV
+@asm ADDV Rm,Rn
+@abstract Rn+Rm->R, overflow->T
+@code 0011nnnnmmmm1111
+@type nm
+
+longword_t d, s, a;
+d=R[n]<0;
+s=R[m]<0;
+s+=d;
+R[n]+=R[m];
+a=R[n]<0;
+a+=d;
+if(s==0||s==2) T=a==1;
+else T=0;
+PC+=2;
+
+@end ADDV
