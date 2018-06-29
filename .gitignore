@@ -6,3 +6,7 @@ src/auto/*
 *.o
 */*.o
 */*/*.o
+
+# anything in OLD
+OLD
+OLD/*
