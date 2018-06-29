@@ -14,11 +14,19 @@ function instruction:new(name)
 	elem.name=name
 	elem.imp={}
 	elem.doc={}
+	elem.category='none'
+	elem.type='none'
 	setmetatable(elem, meta)
 	return elem
 end
 
 local validtypes={'0', 'n', 'm', 'nm', 'md', 'nd4', 'nmd', 'd', 'd12', 'nd8', 'i', 'ni'}
+local validcategories={
+	'arithmetic',
+	'logic',
+	'branch',
+	'control'
+}
 
 
 function proto:validate()
@@ -41,6 +49,9 @@ function proto:validate()
 	end
 	if type(self.doc)~='table' then
 		return false, "Doc isn't a table"
+	end
+	if not util.contains(validcategories, self.category) then
+		return false, "Invalid category "..self.category
 	end
 	return true
 end

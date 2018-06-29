@@ -1,0 +1,36 @@
+@begin CLRMAC
+@asm CLRMAC
+@abstract 0->MACH, 0->MACL
+@code 0000000000101000
+@type 0
+@category control
+
+MACH=0;
+MACL=0;
+PC+=2;
+
+@end CLRMAC
+
+@begin CLRS
+@asm CLRS
+@abstract 0->S
+@code 0000000001001000
+@type 0
+@category control
+
+S=0;
+PC+=2;
+
+@end CLRS
+
+@begin CLRT
+@asm CLRT
+@abstract 0->T
+@code 0000000000001000
+@type 0
+@category control
+
+T=0;
+PC+=2;
+
+@end CLRT

@@ -6,7 +6,7 @@ local util=require 'util'
 
 local commandregex="@([a-z]+)%s+(.*)%s*$"
 local commentregex="//(.*)$"
-local properties={"asm", "abstract", "code", "type"}
+local properties={"asm", "abstract", "code", "type", "category"}
 
 local function parse(iterator)
 	local objects={}

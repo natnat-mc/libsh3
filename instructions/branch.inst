@@ -1,0 +1,51 @@
+@begin BRA
+@asm BRA label
+@abstract disp*2+PC->PC
+@code 1010dddddddddddd
+@type d12
+@category branch
+
+longword_t t=PC;
+PC+=(SIGN_EXTEND12(d)<<1)+4;
+delay_slot(t+2);
+
+@end BRA
+
+@begin BRAF
+@asm BRAF Rm
+@abstract Rm+PC->PC
+@code 0000mmmm00100011
+@type m
+@category branch
+
+longword_t t=PC;
+PC+=R[m];
+delay_slot(t+2);
+
+@end BRAF
+
+@begin BSR
+@asm BSR label
+@abstract PC->PR, disp*2+PC->PC
+@code 1011dddddddddddd
+@type d12
+@category branch
+
+PR=PC;
+PC+=(SIGN_EXTEND12(d)<<1)+4;
+delay_slot(PR+2);
+
+@end BSR
+
+@begin BSRF
+@asm BSRF Rm
+@abstract PC->PC, Rm+PC->PC
+@code 0000mmmm00000011
+@type m
+@category branch
+
+PR=PC;
+PC+=R[m];
+delay_slot(PR+2);
+
+@end BSRF

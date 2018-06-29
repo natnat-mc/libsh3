@@ -6,11 +6,9 @@ local constants={}
 constants.rootdir='/home/Nathan/mnt/cifs/raspnathan2/public/workspace/casio/sh3'
 constants.progname='libsh4'
 constants.model='sh4'
-
-constants.instfiles={
-	'add',
-	'and'
-}
+constants.version='0.1'
+constants.debug=false
+constants.lib=true
 -- BEGIN user-supplied constantants
 
 -- directories
@@ -25,6 +23,13 @@ constants.instext='.inst'
 
 -- files
 constants.makefile=constants.rootdir..'/Makefile'
+constants.instfiles={
+	'add',
+	'and',
+	'bcond',
+	'branch',
+	'clr'
+}
 
 -- getter
 function constants.get(name, t)

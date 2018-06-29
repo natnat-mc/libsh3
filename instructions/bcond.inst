@@ -1,0 +1,55 @@
+@begin BF
+@asm BF label
+@abstract if T then nop else PC+=disp*2
+@code 10001011dddddddd
+@type d
+@category branch
+
+if(T) PC+=2;
+else PC+=(SIGN_EXTEND8(d)<<1)+4;
+
+@end BF
+
+@begin BFS
+@asm BF/S label
+@abstract if T then nop else delay jump PC+disp*2
+@code 10001111dddddddd
+@type d
+@category branch
+
+longword_t t=PC;
+if(T) PC+=2;
+else {
+	PC+=(SIGN_EXTEND8(d)<<1)+4;
+	delay_slot(t+2);
+}
+
+@end BFS
+
+@begin BT
+@asm BT label
+@abstract if not T then nop else PC+=disp*2
+@code 10001001dddddddd
+@type d
+@category branch
+
+if(!T) PC+=2;
+else PC+=(SIGN_EXTEND8(d)<<1)+4;
+
+@end BT
+
+@begin BTS
+@asm BT/S label
+@abstract if not T then nop else delay jump PC+disp*2
+@code 10001101dddddddd
+@type d
+@category branch
+
+longword_t t=PC;
+if(!T) PC+=2;
+else {
+	PC+=(SIGN_EXTEND8(d)<<1)+4;
+	delay_slot(t+2);
+}
+
+@end BTS

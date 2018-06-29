@@ -3,6 +3,7 @@
 @abstract Rn&Rm->Rn
 @code 0010nnnnmmmm1001
 @type nm
+@category logic
 
 R[n]&=R[m];
 PC+=2;
@@ -14,6 +15,7 @@ PC+=2;
 @abstract R0&imm->R0
 @code 11001001iiiiiiii
 @type i
+@category logic
 
 R[0]&=ZERO_EXTEND8(i);
 PC+=2;
@@ -25,6 +27,7 @@ PC+=2;
 @abstract (R0+GBR)&imm->(R0+GBR)
 @code 11001101iiiiiiii
 @type i
+@category logic
 
 longword_t t=read_byte(GBR+R[0]);
 t&=ZERO_EXTEND8(i);
