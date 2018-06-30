@@ -19,8 +19,10 @@ local function parse(iterator)
 		lineno=lineno+1
 		if currentobj then
 			if command=="begin" then
+				-- handle duplicate begin
 				error("Unfinished object with name "..currentobj.name.." at line "..lineno)
 			elseif command=="end" then
+				-- validate and finish an object
 				local ok, err=currentobj:validate()
 				if not ok then 
 					error("Error validating instruction:\n"..err)
@@ -28,12 +30,15 @@ local function parse(iterator)
 				table.insert(objects, currentobj)
 				currentobj=nil
 			elseif command=="doc" then
+				-- append to documentation
 				table.insert(currentobj.doc, arg)
 			elseif util.contains(properties, command) then
+				-- set property
 				currentobj[command]=arg
 			elseif command and command~='' then
 				error("Unknown command ".." at line "..lineno)
 			else
+				-- C code
 				table.insert(currentobj.imp, line)
 			end
 		else
@@ -54,6 +59,7 @@ local function parseFile(filename)
 	return parse(io.lines(filename), filename)
 end
 
+-- parse either a file or an iterator
 return function(obj, name)
 	if type(obj)=='function' then
 		return parse(obj, name)

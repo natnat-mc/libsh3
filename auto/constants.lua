@@ -2,14 +2,27 @@ local util=require 'util'
 
 local constants={}
 
--- BEGIN user-supplied constantants
-constants.rootdir='/home/Nathan/mnt/cifs/raspnathan2/public/workspace/casio/sh3'
+-- BEGIN user-supplied constants
+
+-- root directory, necessary for auto setup system
+--constants.rootdir='/home/Nathan/mnt/cifs/raspnathan2/public/workspace/casio/sh3'
+constants.rootdir='/rasp/shares/public/workspace/casio/sh3'
+
+-- program name and version
 constants.progname='libsh4'
-constants.model='sh4'
 constants.version='0.1'
+
+-- processor model
+constants.model='sh4'
+
+-- release mode
 constants.debug=false
 constants.lib=true
--- BEGIN user-supplied constantants
+constants.prefix='SH4_'
+
+-- END user-supplied constants
+
+-- BEGIN static constants
 
 -- directories
 constants.includedir=constants.rootdir..'/include'
@@ -30,6 +43,8 @@ constants.instfiles={
 	'branch',
 	'clr'
 }
+
+-- END static constants
 
 -- getter
 function constants.get(name, t)

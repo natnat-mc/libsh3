@@ -6,7 +6,7 @@
 @category arithmetic
 
 R[n]+=R[m];
-PC+=2
+PC+=2;
 
 @end ADD
 

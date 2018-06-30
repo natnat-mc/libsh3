@@ -3,6 +3,7 @@ local util=require 'util'
 local parse=require 'parse'
 local imp=require 'imp'
 local makefile=require 'makefile'
+local decoder=require 'decoder'
 local writefile=require 'writefile'
 
 -- parse all instructions
@@ -17,6 +18,9 @@ objects=util.merge(objects)
 for k, v in ipairs(objects) do
 	writefile(imp(v))
 end
+
+-- write decoder
+writefile(decoder(objects))
 
 -- write Makefile
 writefile(makefile())

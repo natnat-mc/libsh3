@@ -4,6 +4,7 @@
 local constants=require 'constants'
 local util=require 'util'
 
+-- arguments for type
 local paramsfortype={
 	['0']={},
 	['n']={'n'},
@@ -17,33 +18,20 @@ local paramsfortype={
 	['i']={'i'},
 	['ni']={'n', 'i'}
 }
-local includes={
-	{'internalincludedir', 'common.h'},
-	{'internalincludedir', 'sh3.h'},
-	{'internalincludedir', 'macro.h'},
-	{'internalincludedir', 'typedef.h'}
-}
-local function getincludedef()
-	local def=""
-	for k, v in ipairs(includes) do
-		local rel=util.getrelpath(constants.get('autocodedir', 'string'), constants.get(v[1], 'string'))..'/'..v[2]
-		def=def.."#include \""..rel.."\"\n"
-	end
-	return def
-end
 
+-- returns prototype and defines
 local function getfuncdef(instruction)
-	local def="void instruction_"..instruction.name.."(sh3_t *sh3"
-	local params=paramsfortype[instruction.type]
-	for i, v in ipairs(params) do
-		def=def..", longword_t "..v
+	local def=''
+	for i, v in ipairs(paramsfortype[instruction.type]) do
+		def=def.."#define "..v.." instruction.fmt_"..instruction.type..'.'..v..'\n'
 	end
-	def=def..") {"
+	def=def.."void instruction_"..instruction.name.."(sh3_t *sh3, instruction_t instruction) {"
 	return def
 end
 
+-- returns C code for the implementation
 local function getimp(instruction)
-	local imp=getincludedef()..'\n'
+	local imp="#include \""..util.getrelpath(constants.get('autocodedir', 'string'), constants.get('internalincludedir', 'string')).."/instructionHeader.h\"\n\n"
 	imp=imp..getfuncdef(instruction)..'\n'
 	for i, v in pairs(instruction.imp) do
 		imp=imp..'\t'..v..'\n'

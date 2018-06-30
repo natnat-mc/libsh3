@@ -7,6 +7,10 @@ src/auto/*
 */*.o
 */*/*.o
 
+# nohup.out and tmp files
+nohup.out
+.*~
+
 # anything in OLD
 OLD
 OLD/*
