@@ -53,6 +53,9 @@ function proto:validate()
 	if not util.contains(validcategories, self.category) then
 		return false, "Invalid category "..self.category
 	end
+	if not self.exclusive then
+		self.exclusive='any'
+	end
 	return true
 end
 

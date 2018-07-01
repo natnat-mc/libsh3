@@ -1,0 +1,95 @@
+@begin CMPEQ
+@asm CMP/EQ Rm,Rn
+@abstract if Rn==Rm then 1->T else 0->T
+@code 0011nnnnmmmm0000
+@type nm
+@category arithmetic
+
+T=R[n]==R[m];
+PC+=2;
+
+@end CMPEQ
+
+@begin CMPGE
+@asm CMP/GE Rm,Rn
+@abstract if Rn>=Rm then 1->T else 0->T
+@code 0011nnnnmmmm0011
+@type nm
+@category arithmetic
+
+T=R[n]>=R[m];
+PC+=2;
+
+@end CMPGE
+
+@begin CMPGT
+@asm CMP/GT Rm,Rn
+@abstract if Rn>Rm then 1->T else 0->T
+@code 0011nnnnmmmm0111
+@type nm
+@category arithmetic
+
+T=R[n]>R[m];
+PC+=2;
+
+@end CMPGT
+
+@begin CMPHI
+@asm CMP/HI Rm,Rn
+@abstract if unsigned Rn>Rm then 1->T else 0->T
+@code 0011nnnnmmmm0110
+@type nm
+@category arithmetic
+
+T=((ulongword_t)R[n])>((ulongword_t)R[m]);
+PC+=2;
+
+@end CMPHI
+
+@begin CMPHS
+@asm CMP/HS Rm,Rn
+@abstract if unsigned Rn>=Rm then 1->T else 0->T
+@code 0011nnnnmmmm0010
+@type nm
+@category arithmetic
+
+T=((ulongword_t)R[n])>=((ulongword_t)R[m]);
+PC+=2;
+
+@end CMPHS
+
+@begin CMPPL
+@asm CMP/PL Rn
+@abstract if Rn>0 then 1->T else 0->T
+@code 0100nnnn00010101
+@type n
+@category arithmetic
+
+T=R[n]>0;
+PC+=2;
+
+@end CMPPL
+
+@begin CMPPZ
+@asm CMP/PZ Rn
+@abstract if Rn>=0 then 1->T else 0->T
+@code 0100nnnn00010001
+@type n
+@category arithmetic
+
+T=R[n]>=0;
+PC+=2;
+
+@end CMPPZ
+
+@begin CMPEQI
+@asm CMP/EQ #imm,R0
+@abstract if R0==imm then 1->T else 0->T
+@code 10001000iiiiiiii
+@type i
+@category arithmetic
+
+T=R[0]==i;
+PC+=2;
+
+@end CMPEQI

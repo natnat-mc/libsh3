@@ -15,6 +15,7 @@ end
 function makefile.clean()
 	local rule='clean:\n'
 	rule=rule..'\trm -f '..constants.get('autocodedir', 'string')..'/*\n'
+	rule=rule..'\trm -f '..constants.get('autodocdir', 'string')..'/*\n'
 	return rule
 end
 

@@ -1,0 +1,94 @@
+@begin DIV0S
+@asm DIV0S Rm,Rn
+@abstract MSB of Rn->Q, MSB of Rm->M, M xor Q->T
+@code 0010nnnnmmmm0111
+@type nm
+@category arithmetic
+
+@doc prepares flags for signed division
+@doc see [DIV1](DIV1.md) for more details
+
+Q=!!(R[n]&0x80000000);
+M=!!(R[m]&0x80000000);
+T=!(M==Q);
+PC+=2;
+
+@end DIV0S
+
+@begin DIV0U
+@asm DIV0U
+@abstract 0->M, 0->Q, 0->T
+@code 0000000000011001
+@type 0
+@category arithmetic
+
+@doc prepares flags for unsigned division
+@doc see [DIV1](DIV1.md) for more details
+
+M=0;
+Q=0;
+T=0;
+PC+=2;
+
+@end DIV0U
+
+@begin DIV1
+@asm DIV1 Rm,Rn
+@abstract single-step division of Rn by Rm
+@code 0011nnnnmmmm0100
+@type nm
+@category arithmetic
+
+@doc calculates single-step division of Rn by Rm
+@doc should be used in repetition and often with other instructions
+@doc do not rewrite Rm, Rn, M, Q or T during the repetition
+@doc there are no checks in place, user code should take care of it before dividing
+@doc please, let GCC handle this for you
+
+ulongword_t t0;
+ubyte_t oldQ, t1;
+
+// set the correct value for Q
+oldQ=Q;
+Q=!!(R[n]&0x80000000);
+
+// shift Rn one bit to the left and set the T bit
+R[n]<<=1;
+R[n]|=T;
+
+// proceed to the actual division
+t0=R[n];
+switch(oldQ){
+	case 0:
+		switch(M){
+			case 0:
+				R[n]-=R[m];
+				t1=(R[n]>t0);
+				Q=Q?(t1==0):t1;
+				break;
+			case 1:
+				R[n]+=R[m];
+				t1=(R[n]<t0);
+				Q=Q?t1:(t1==0);
+				break;
+		}
+		break;
+	case 1:
+		switch(M){
+			case 0:
+				R[n]+=R[m];
+				t1=(R[n]<t0);
+				Q=Q?(t1==0):t1;
+				break;
+			case 1:
+				R[n]-=R[m];
+				t1=(R[n]>t0);
+				Q=Q?t1:(t1==0);
+				break;
+		}
+		break;
+}
+T=(Q==M);
+PC+=2;
+
+@end DIV1

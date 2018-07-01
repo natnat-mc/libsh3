@@ -10,7 +10,6 @@ Cleaning is done by executing `auto/clean.lua`
 * implement all instructions  
 * finish the auto system  
 * finish the Makefile builder  
-* generate documentation in Markdown  
 * implement the processor correctly  
 * implement peripherals according to the spec  
 * implement assembler and disassembler  

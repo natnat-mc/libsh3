@@ -5,8 +5,8 @@ local constants={}
 -- BEGIN user-supplied constants
 
 -- root directory, necessary for auto setup system
---constants.rootdir='/home/Nathan/mnt/cifs/raspnathan2/public/workspace/casio/sh3'
-constants.rootdir='/rasp/shares/public/workspace/casio/sh3'
+constants.rootdir='/home/Nathan/mnt/cifs/raspnathan2/public/workspace/casio/sh3'
+--constants.rootdir='/rasp/shares/public/workspace/casio/sh3'
 
 -- program name and version
 constants.progname='libsh4'
@@ -30,9 +30,12 @@ constants.internalincludedir=constants.includedir..'/internal'
 constants.codedir=constants.rootdir..'/src'
 constants.autocodedir=constants.codedir..'/auto'
 constants.instdir=constants.rootdir..'/instructions'
+constants.docdir=constants.rootdir..'/doc'
+constants.autodocdir=constants.docdir..'/auto'
 
 -- file extensions
 constants.instext='.inst'
+constants.docext='.md'
 
 -- files
 constants.makefile=constants.rootdir..'/Makefile'
@@ -41,7 +44,9 @@ constants.instfiles={
 	'and',
 	'bcond',
 	'branch',
-	'clr'
+	'clr',
+	'cmp',
+	'div'
 }
 
 -- END static constants

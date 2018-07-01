@@ -266,4 +266,10 @@ function util.bintoi(str)
 	return util.atoi(str, 2)
 end
 
+-- optional require
+function util.requireopt(name)
+	local ok, obj=pcall(require, name)
+	return ok and obj or nil
+end
+
 return util

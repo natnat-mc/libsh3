@@ -6,7 +6,7 @@ local util=require 'util'
 
 local commandregex="@([a-z]+)%s+(.*)%s*$"
 local commentregex="//(.*)$"
-local properties={"asm", "abstract", "code", "type", "category"}
+local properties={"asm", "abstract", "code", "type", "category", "exclusive"}
 
 local function parse(iterator)
 	local objects={}
@@ -22,10 +22,14 @@ local function parse(iterator)
 				-- handle duplicate begin
 				error("Unfinished object with name "..currentobj.name.." at line "..lineno)
 			elseif command=="end" then
+				-- make sure we're finishing the current object
+				if arg~=currentobj.name then
+					error("Finishing the wrong instruction")
+				end
 				-- validate and finish an object
 				local ok, err=currentobj:validate()
 				if not ok then 
-					error("Error validating instruction:\n"..err)
+					error("Error validating instruction "..(currentobj.name or '??')..":\n"..err)
 				end
 				table.insert(objects, currentobj)
 				currentobj=nil

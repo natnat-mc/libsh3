@@ -23,7 +23,7 @@ local paramsfortype={
 local function getfuncdef(instruction)
 	local def=''
 	for i, v in ipairs(paramsfortype[instruction.type]) do
-		def=def.."#define "..v.." instruction.fmt_"..instruction.type..'.'..v..'\n'
+		def=def.."#define "..v.." ((longword_t) instruction.fmt_"..instruction.type..'.'..v..')\n'
 	end
 	def=def.."void instruction_"..instruction.name.."(sh3_t *sh3, instruction_t instruction) {"
 	return def
