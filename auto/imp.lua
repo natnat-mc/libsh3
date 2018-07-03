@@ -1,8 +1,8 @@
 -- implementation converter
 -- takes an instruction and generates the C code of its implementation
 
-local constants=require 'constants'
 local util=require 'util'
+local files=require 'files'
 
 -- arguments for type
 local paramsfortype={
@@ -31,16 +31,16 @@ end
 
 -- returns C code for the implementation
 local function getimp(instruction)
-	local imp="#include \""..util.getrelpath(constants.get('autocodedir', 'string'), constants.get('internalincludedir', 'string')).."/instructionHeader.h\"\n\n"
+	local imp="#include \""..files.getrelpath('autocode', 'internalinclude').."/instructionHeader.h\"\n\n"
 	imp=imp..getfuncdef(instruction)..'\n'
 	for i, v in pairs(instruction.imp) do
 		imp=imp..'\t'..v..'\n'
 	end
 	imp=imp..'}\n'
 	
-	local filename=constants.get('autocodedir', 'string')..'/instruction_'..instruction.name..'.c'
+	local filename=files.getfile('autocode', 'instruction_'..instruction.name..'.c')
 	
-	return imp, filename
+	return files.add(imp, filename, 'imp')
 end
 
 return getimp

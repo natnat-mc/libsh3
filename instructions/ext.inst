@@ -1,0 +1,55 @@
+@begin EXTSB
+@asm EXTS.B Rm,Rn
+@abstract longword from byte Rm->Rn
+@code 0110nnnnmmmm1110
+@type nm
+@category arithmetic
+
+@doc sign-extends Rm from a byte (8bit) to a longword (32bit)
+
+R[n]=SIGN_EXTEND8(R[m]);
+PC+=2;
+
+@end EXTSB
+
+@begin EXTSW
+@asm EXTS.W Rm,Rn
+@abstract longword from word Rm->Rn
+@code 0110nnnnmmmm1111
+@type nm
+@category arithmetic
+
+@doc sign-extends Rm from a word (16bit) to a longword (32bit)
+
+R[n]=SIGN_EXTEND16(R[m]);
+PC+=2;
+
+@end EXTSW
+
+@begin EXTUB
+@asm EXTU.B Rm,Rn
+@abstract Rm&0xff->Rn
+@code 0110nnnnmmmm1100
+@type nm
+@category arithmetic
+
+@doc zero-extends Rm from a byte (8bit) to a longword (32bit)
+
+R[n]=ZERO_EXTEND8(R[m]);
+PC+=2;
+
+@end EXTUB
+
+@begin EXTUW
+@asm EXTU.W Rm,Rn
+@abstract Rm&0xffff->Rn
+@code 0110nnnnmmmm1101
+@type nm
+@category arithmetic
+
+@doc zero-extends Rm from a word (16bit) to a longword (32bit)
+
+R[n]=ZERO_EXTEND16(R[m]);
+PC+=2;
+
+@end EXTUW

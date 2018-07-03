@@ -2,7 +2,7 @@
 -- returns the code responsible for decoding instructions
 
 local util=require 'util'
-local constants=require 'constants'
+local files=require 'files'
 
 -- bitmask generators
 local function getbitmask(instruction)
@@ -18,7 +18,12 @@ local function getfunction(instruction)
 end
 
 -- main detector
-local function detect(tab, instructions, branching)
+local function detect(tab, instructions, nodelay, priv)
+	-- make sure we actually have instructions
+	if #instructions==0 then
+		return
+	end
+	
 	-- sort instructions by bitmask
 	local masks={}
 	for i, instruction in ipairs(instructions) do
@@ -36,8 +41,11 @@ local function detect(tab, instructions, branching)
 		for k, v in ipairs(instructions) do
 			local test, func=v[1], v[2]
 			table.insert(tab, "\tcase "..test..":")
-			if branching then
+			if nodelay then
 				table.insert(tab, "\t\tif(inDelay) return ESLOT;")
+			end
+			if priv then
+				table.insert(tab, "\t\tif(!priv) return EPRIV;")
 			end
 			table.insert(tab, "\t\tret("..func..");")
 			table.insert(tab, "\t\tbreak;")
@@ -54,26 +62,35 @@ local function detectsingle(tab, instruction)
 		-- the code can be invalid
 		table.insert(tab, "if(!MASK_EQ(inst, "..bittest..", "..bitmask..")) return EGENERAL;")
 	end
-	if instruction.category=='branch' then
+	if not instruction:isdelaylegal() then
 		table.insert(tab, "if(inDelay) return ESLOT;")
+	end
+	if not instruction:isuserlegal() then
+		table.insert(tab, "if(!priv) return EPRIV;")
 	end
 	table.insert(tab, "ret("..getfunction(instruction)..");")
 end
 local function detectseveral(tab, instructions)
 	-- segregate branch instructions
-	local branching, nonbranching={}, {}
+	local delayuser, delaynouser, nodelayuser, nodelaynouser={}, {}, {}, {}
 	for i, instruction in ipairs(instructions) do
-		table.insert(instruction.category=='branch' and branching or nonbranching, instruction)
+		local delay=instruction:isdelaylegal()
+		local user=instruction:isuserlegal()
+		if delay and user then
+			table.insert(delayuser, instruction)
+		elseif delay and not user then
+			table.insert(delaynouser, instruction)
+		elseif user and not delay then
+			table.insert(nodelayuser, instruction)
+		else
+			table.insert(nodelaynouser, instruction)
+		end
 	end
 	
-	if #branching==0 then
-		detect(tab, instructions, false)
-	elseif #nonbranching==0 then
-		detect(tab, instructions, true)
-	else
-		detect(tab, branching, true)
-		detect(tab, nonbranching, false)
-	end
+	detect(tab, nodelayuser, true, false)
+	detect(tab, nodelaynouser, true, true)
+	detect(tab, delayuser, false, false)
+	detect(tab, delaynouser, false, true)
 	table.insert(tab, "return EGENERAL;")
 end
 
@@ -81,7 +98,7 @@ end
 local static=[=[
 // typedefs
 typedef int(*instruction_f)(sh3_t*, instruction_t);
-typedef int(*decoder_f)(word_t, int, instruction_f*);
+typedef int(*decoder_f)(word_t, int, int, instruction_f*);
 // faster function calls
 #define instruction ((instruction_t) inst)
 // valid return
@@ -89,15 +106,15 @@ typedef int(*decoder_f)(word_t, int, instruction_f*);
 // for fast decoding
 static decoder_f byHigh[16];
 // calls special decoders
-int decode(word_t inst, int inDelay, instruction_f* ptr) {
-	return byHigh[(inst>>12)&0xf](inst, inDelay, ptr);
+int decode(word_t inst, int inDelay, int priv, instruction_f* ptr) {
+	return byHigh[(inst>>12)&0xf](inst, inDelay, priv, ptr);
 }
 ]=]
 
 -- prototypes
 local prototypes=''
 for i=0, 15 do
-	prototypes=prototypes.."static int decode"..i.."(word_t inst, int inDelay, instruction_f* ptr);\n"
+	prototypes=prototypes.."static int decode"..i.."(word_t inst, int inDelay, int priv, instruction_f* ptr);\n"
 end
 
 -- init
@@ -118,7 +135,7 @@ local includetable={
 	'sh3.h'
 }
 for i, v in ipairs(includetable) do
-	includes=includes.."#include \""..util.getrelpath(constants.get('autocodedir', 'string'), constants.get('internalincludedir', 'string')).."/"..v.."\"\n"
+	includes=includes.."#include \""..files.getrelpath('autocode', 'internalinclude').."/"..v.."\"\n"
 end
 
 -- decoders
@@ -153,7 +170,7 @@ end
 local function getdecoders()
 	local code=''
 	for i=0, 15 do
-		code=code.."int decode"..i.."(word_t inst, int inDelay, instruction_f* ptr) {\n"
+		code=code.."int decode"..i.."(word_t inst, int inDelay, int priv, instruction_f* ptr) {\n"
 		local decoder=decoders[i]
 		if not decoder then
 			decoder={
@@ -176,6 +193,6 @@ return function(instructions)
 	code=code..static..'\n'
 	code=code..init..'\n'
 	code=code..getdecoders()
-	local filename=constants.get('autocodedir', 'string')..'/decoder.c'
-	return code, filename
+	local filename=files.getfile('autocode', 'decoder.c')
+	return files.add(code, filename, 'decoder')
 end

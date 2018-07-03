@@ -1,16 +1,13 @@
 -- doc
 -- generates Markdown documentation
 
-local util=require 'util'
+local files=require 'files'
 local constants=require 'constants'
 
 local asmnamereg="^(%S+)"
 
 local function getfilename(instruction)
-	local path=constants.get('autodocdir', 'string')..'/'
-	local name=instruction.name
-	local ext=constants.get('docext', 'string')
-	return path..name..ext
+	return files.getfile('autodoc', instruction.name..constants.get('docext', 'string'))
 end
 
 local function gendoc(instruction)
@@ -44,5 +41,5 @@ end
 return function(instruction)
 	local doc=gendoc(instruction)
 	local filename=getfilename(instruction)
-	return doc, filename
+	return files.add(doc, filename, 'doc')
 end

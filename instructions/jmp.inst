@@ -1,0 +1,25 @@
+@begin JMP
+@asm JMP @Rm
+@abstract Rm->PC
+@code 0100mmmm00101011
+@type m
+@category branch
+
+ulongword_t t=PC;
+PC=R[m]+4;
+delay_slot(t+2);
+
+@end JMP
+
+@begin JSR
+@asm JSR @Rm
+@abstract PC->PR, Rm->PC
+@code 0100mmmm00001011
+@type m
+@category branch
+
+PR=PC;
+PC=R[m]+4;
+delay_slot(PR+2);
+
+@end JSR

@@ -18,7 +18,7 @@ function util.dump(obj, name, sep)
 	name=name or 'obj'
 	sep=sep or ''
 	if type(obj)=='table' then
-		print(sep..name..'\t'..'table')
+		print(sep..name..':')
 		for k, v in pairs(obj) do
 			util.dump(v, name..'.'..k, sep..'\t')
 		end
@@ -119,6 +119,12 @@ function util.getrelpath(orig, dest)
 	
 	-- remove the leading slash
 	return path:sub(1, -2)
+end
+
+-- returns the filename given a full path
+function util.getfilename(file)
+	file=util.splitpath(file)
+	return file[#file]
 end
 
 -- returns a value with the required type or throw an error

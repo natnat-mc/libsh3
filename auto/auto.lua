@@ -1,41 +1,55 @@
 local constants=require 'constants'
 local util=require 'util'
-local parse=require 'parse'
-local segregate=require 'segregate'
-local imp=require 'imp'
-local doc=require 'doc'
-local makefile=require 'makefile'
-local decoder=require 'decoder'
-local writefile=require 'writefile'
+local config=require 'config'
+local files=require 'files'
+
+local instructions={}
 
 -- parse all instructions
-print "Reading instructions"
-local objects={}
-for k, v in ipairs(constants.get('instfiles', 'table.string')) do
-	local file=constants.get('instdir', 'string')..'/'..v..constants.get('instext', 'string')
-	table.insert(objects, parse(file))
+do
+	print "Parsing instructions"
+	local parse=require 'parse'
+	for k, name in ipairs(constants.get('instfiles', 'table.string')) do
+		local file=files.getfile('inst', name..constants.get('instext', 'string'))
+		table.insert(instructions, parse(file))
+	end
 end
 
--- merge all instruction lists and retain only supported instructions
-objects=util.merge(objects)
-objects=segregate(objects)
-
--- write all implementation files
-print "Generating implementations"
-for k, v in ipairs(objects) do
-	writefile(imp(v))
+-- select target instructions
+do
+	print "Selecting instructions for model"
+	local segregate=require 'segregate'
+	instructions=segregate(util.merge(instructions))
 end
 
--- write all documentation files
-print "Generating documentation"
-for k, v in ipairs(objects) do
-	writefile(doc(v))
+-- generate all implementations
+if config.get('lib.generate') then
+	print "Generating implementations"
+	local imp=require 'imp'
+	for k, instruction in pairs(instructions) do
+		imp(instruction)
+	end
 end
 
--- write decoder
-print "Generating decoder"
-writefile(decoder(objects))
+-- generate decoder
+if config.get('lib.generate') then
+	print "Generating decoder"
+	local decoder=require 'decoder'
+	decoder(instructions)
+end
 
--- write Makefile
-print "Generating Makefile"
-writefile(makefile())
+-- generate documentation
+if config.get('doc.generate') then
+	print "Generating documentation"
+	local doc=require 'doc'
+	for k, instruction in ipairs(instructions) do
+		doc(instruction)
+	end
+end
+
+-- generate Makefile
+do
+	print "Generating Makefile"
+	local makefile=require 'makefile'
+	makefile()
+end

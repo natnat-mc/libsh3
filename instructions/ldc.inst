@@ -1,0 +1,13 @@
+@begin LDC_SR
+@asm LDC Rm,SR
+@abstract Rm->SR
+@code 0100mmmm00001110
+@type m
+@category sysctl
+
+@attribute priv
+
+@attribute TODO
+//TODO implement me
+
+@end LDC_SR

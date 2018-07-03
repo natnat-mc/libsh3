@@ -1,0 +1,103 @@
+@begin DMULS
+@asm DMULS.L Rm,Rn
+@abstract Rn*Rm->MACH:MACH
+@code 0011nnnnmmmm1101
+@type nm
+@category arithmetic
+
+@doc multiplies Rn and Rm (32bit*32bit)
+@doc stores the 64bit result in MACH:MACL
+@doc uses signed arithmetic
+
+ulongword_t rnL, rnH, rmL, rmH, r0, r1, r2;
+ulongword_t t0, t1, t2, t3;
+longword_t tm, tn, fL;
+
+// setup everything
+tn=R[n];
+tm=R[m];
+if(tn<0) tn=-tn;
+if(tm<0) tm=-tm;
+fL=(R[n][m]<0)?-1:0;
+
+t1=tn;
+t3=tm;
+
+// get high and low parts for multiplication
+rnL=t1&0xffff;
+rnH=(t1>>16)&0ffff;
+rmL=t2&0xffff;
+rmH=(t2>>16)&0xffff;
+
+// multiply
+t0=rmL*rnL;
+t1=rmH*rnL;
+t2=rmL*rnH;
+t3=rmH*rnH;
+
+// merge all the results
+r2=0;
+r1=t1+t2;
+if(r1<t1) r2+=0x10000;
+
+t1=(r1<<16)&0xffff0000;
+r0=t0+t1;
+if(r0<t0) r2++;
+
+if(fL<0) {
+	r2=~r2;
+	if(r0) r0=(~r0)+1;
+	else r2++;
+}
+
+// write output registers
+MACH=r2;
+MACL=r1;
+PC+=2;
+
+@end DMULS
+
+@begin DMULU
+@asm DMULU.L Rm,Rn
+@abstract Rm*Rn->MACH:MACL
+@code 0011nnnnmmmm0101
+@type nm
+@category arithmetic
+
+@doc multiplies Rn and Rm (32bit*32bit)
+@doc stores the 64bit result in MACH:MACL
+@doc uses unsigned arithmetic
+
+ulongword_t rnL, rnH, rmL, rmH, r0, r1, r2;
+ulongword_t t0, t1, t2, t3;
+
+// get 16bit halfwords to multiply using 32bit arithmetic
+rnL=R[n]&0xffff;
+rnH=(R[n]>>16)&0xffff;
+rmL=R[m]&0xffff;
+rmH=(R[m]>>16)&0xffff;
+
+// do the 32bit multiplications without overflow
+t0=rmL*rnL;
+r1=rmH*rnL;
+r2=rmL*rnH;
+r3=rmH*rnH;
+
+// merge everything
+r2=0;
+r1=r1+r2;
+if(r1<t1) r2+=0x10000;
+
+t1=(r1<<16)&0xffff0000;
+r0=t0+t1;
+if(r0<t0) r2++;
+
+r2+=(r1>>16)&0xffff;
+r2+=t3;
+
+// write output registers
+MACH=r2;
+MACL=r0;
+PC+=2;
+
+@end DMULU

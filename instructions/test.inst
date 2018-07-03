@@ -1,0 +1,14 @@
+@begin DT
+@asm DT Rn
+@abstract Rn--, if Rn==0 then 1->T else 0->T
+@code 0100nnnn00010000
+@type n
+@category arithmetic
+
+@doc decrements Rn and checks if it is null
+
+R[n]--;
+T=!R[n];
+PC+=2;
+
+@end DT

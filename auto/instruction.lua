@@ -14,6 +14,7 @@ function instruction:new(name)
 	elem.name=name
 	elem.imp={}
 	elem.doc={}
+	elem.attributes={}
 	elem.category='none'
 	elem.type='none'
 	setmetatable(elem, meta)
@@ -25,7 +26,8 @@ local validcategories={
 	'arithmetic',
 	'logic',
 	'branch',
-	'control'
+	'control',
+	'sysctl'
 }
 
 
@@ -55,6 +57,22 @@ function proto:validate()
 	end
 	if not self.exclusive then
 		self.exclusive='any'
+	end
+	return true
+end
+
+function proto:isdelaylegal()
+	if self.category=='branch' then
+		return false
+	end
+	if util.contains(self.attributes, 'nodelay') then
+		return false
+	end
+	return true
+end
+function proto:isuserlegal()
+	if util.contains(self.attributes, 'priv') then
+		return false
 	end
 	return true
 end

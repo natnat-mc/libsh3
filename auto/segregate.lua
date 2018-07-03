@@ -2,9 +2,9 @@
 -- retains only supported instructions for selected processor model
 
 local util=require 'util'
-local constants=require 'constants'
+local config=require 'config'
 
-local model=constants.get('model', 'string')
+local model=config.get('general.model')
 
 local function selected(exclusive)
 	if exclusive=='any' then

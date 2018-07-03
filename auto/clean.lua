@@ -1,11 +1,6 @@
-local util=require 'util'
-local constants=require 'constants'
-local makefile=require 'makefile'
-local writefile=require 'writefile'
+local files=require 'files'
 
--- create Makefile
-writefile(makefile())
 -- make clean
-os.execute('cd \"'..constants.get('rootdir', 'string')..'\" && make clean')
+os.execute('cd \"'..files.getfile('root')..'\" && make mrproper')
 -- remove Makefile
-os.remove(constants.get('makefile', 'string'))
+os.remove(files.getfile('Makefile'))
