@@ -46,6 +46,12 @@ fmt.disassembler={}
 fmt.disassembler.generate='boolean'
 fmt.disassembler.name='string'
 
+fmt.compile={}
+fmt.compile.CC='string'
+fmt.compile.LD='string'
+fmt.compile.CFLAGS='string'
+fmt.compile.LFLAGS='string'
+
 inifile.validate(cfg, fmt)
 
 local config={}

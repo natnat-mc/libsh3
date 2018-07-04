@@ -6,7 +6,7 @@ inifile.commentregex="^%s*;(.*)$"
 inifile.emptyregex="^%s*$"
 inifile.sectionregex="^%s*%[(.+)%]%s*$"
 inifile.settingregex="^%s*(%w+)%s*=%s*([%w%p]+)%s*$"
-inifile.stringregex="^%s*(%w+)%s*=%s*\"([^\"]+)\"%s*$"
+inifile.stringregex="^%s*(%w+)%s*=%s*\"([^\"]*)\"%s*$"
 inifile.varregex="%%(%w+)%.(%w+)%%"
 
 function inifile.read(filename)

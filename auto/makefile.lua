@@ -72,48 +72,73 @@ local function genphony()
 end
 -- END generators
 
--- BEGIN object lister
+-- BEGIN lib target
+
 local objects={}
 local categories={'imp', 'decoder'}
 for i, category in ipairs(categories) do
 	for k, source in ipairs(files.add.getcategory(category)) do
 		local obj={}
-		obj.source=source
+		obj.source=util.getfilename(source)
 		obj.category=category
-		obj.object=files.getfile('obj', util.getfilename(source):gsub('.c$', '.o'))
+		obj.object=util.getfilename(source):gsub('.c$', '.o')
 		table.insert(objects, obj)
 	end
 end
--- END object lister
+
+-- setup all variables correctly
+for i, variable in ipairs({'CC', 'LD', 'CFLAGS', 'LFLAGS'}) do
+	local value=config.get('compile', variable)
+	addheader(variable..'='..value)
+end
+for i, variable in ipairs({'AUTOCODE', 'OBJ', 'AUTODOC'}) do
+	local value=files.getfile(variable:lower())
+	addheader(variable..'DIR='..value)
+end
+
+-- setup object list
+do
+	local text='AUTOOBJS='
+	for i, object in ipairs(objects) do
+		text=text..'$(OBJDIR)/'..object.object..' '
+	end
+	addheader(text:sub(1, -2))
+end
+
+-- build all auto-magically generated objects
+for i, object in ipairs(objects) do
+	addrule('$(OBJDIR)/'..object.object, function(dep, cmd)
+	dep('$(AUTOCODEDIR)/'..object.source)
+	cmd('$(CC) $(CFLAGS) -o $@ -c $<')
+end)
+end
+
+-- END lib target
 
 -- BEGIN basic rules
 
 addrule('clean', function(dep, cmd)
 	-- remove all object files
-	for i, object in ipairs(objects) do
-		cmd('rm -f '..object.object)
-	end
+	cmd('rm -f $(OBJDIR)/*')
 end)
 
 addrule('mrproper', function(dep, cmd)
 	dep('clean')
 	-- remove the documentation
 	if config.get('doc.generate') then
-		cmd('rm -f '..files.getfile('autodoc', '*'))
+		cmd('rm -f $(AUTODOCDIR)/*')
 	end
 	-- remove generated source files
-	for i, object in ipairs(objects) do
-		cmd('rm -f '..object.source)
-	end
+	cmd('rm -f $(AUTOCODEDIR)/*')
 	-- remove binaries
 	if config.get('lib.generate') then
-		cmd('rm -f '..files.getfile('root', config.get('lib.name')))
+		cmd('rm -f '..config.get('lib.name'))
 	end
 	if config.get('assembler.generate') then
-		cmd('rm -f '..files.getfile('root', config.get('assembler.name')))
+		cmd('rm -f '..config.get('assembler.name'))
 	end
 	if config.get('disassembler.generate') then
-		cmd('rm -f '..files.getfile('root', config.get('disassembler.name')))
+		cmd('rm -f '..config.get('disassembler.name'))
 	end
 end)
 

@@ -1,16 +1,21 @@
 # auto-generated code
 Makefile
 src/auto/*
+doc/auto/*
 
 # object files
 *.o
 */*.o
 */*/*.o
 
-# nohup.out and tmp files
+# nohup.out and tmp files
 nohup.out
 .*~
 
 # anything in OLD
 OLD
 OLD/*
+
+# generated files
+Makefile
+*.so
