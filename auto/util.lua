@@ -20,7 +20,11 @@ function util.dump(obj, name, sep)
 	if type(obj)=='table' then
 		print(sep..name..':')
 		for k, v in pairs(obj) do
-			util.dump(v, name..'.'..k, sep..'\t')
+			if type(k)=='number' then
+				util.dump(v, name..'['..k..']', sep..'\t')
+			else
+				util.dump(v, name..'.'..k, sep..'\t')
+			end
 		end
 	else
 		print(sep..name..'\t'..type(obj)..'\t'..tostring(obj))
@@ -30,15 +34,12 @@ end
 -- merges tables together
 function util.merge(...)
 	local args, tab={...}, {}
-	if #args==1 then
-		return util.merge(table.unpack(args[1]))
+	if #args~=1 then
+		return util.merge(args)
 	end
-	for i, c in ipairs(args) do
-		if type(c)~='table' then
-			error('cannot merge a '..type(c), 2)
-		end
-		for k, v in ipairs(c) do
-			table.insert(tab, v)
+	for i, v in ipairs(args[1]) do
+		for k, e in ipairs(v) do
+			table.insert(tab, e)
 		end
 	end
 	return tab

@@ -1,5 +1,5 @@
 -- instruction file parser
--- takes an instruction file and outputs instruction objects
+-- reads instruction description files
 
 local instruction=require 'instruction'
 local util=require 'util'
@@ -9,7 +9,6 @@ local commentregex="//(.*)$"
 local properties={"asm", "abstract", "code", "type", "category", "exclusive"}
 
 local function parse(iterator)
-	local objects={}
 	local currentobj
 	local lineno=0
 	for line in iterator do
@@ -31,7 +30,7 @@ local function parse(iterator)
 				if not ok then 
 					error("Error validating instruction "..(currentobj.name or '??')..":\n"..err)
 				end
-				table.insert(objects, currentobj)
+				currentobj:add()
 				currentobj=nil
 			elseif command=="doc" then
 				-- append to documentation
@@ -59,7 +58,6 @@ local function parse(iterator)
 	if currentobj then
 		error("Unfinished object with name "..currentobj.name)
 	end
-	return objects
 end
 
 local function parseFile(filename)

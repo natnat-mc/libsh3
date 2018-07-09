@@ -1,12 +1,6 @@
 # auto-generated code
-Makefile
-src/auto/*
-doc/auto/*
-
-# object files
-*.o
-*/*.o
-*/*/*.o
+output
+doc
 
 # nohup.out and tmp files
 nohup.out
@@ -14,8 +8,3 @@ nohup.out
 
 # anything in OLD
 OLD
-OLD/*
-
-# generated files
-Makefile
-*.so

@@ -2,12 +2,14 @@ local util=require 'util'
 
 local inifile={}
 
+local namereg="[-%w_%*]+"
+
 inifile.commentregex="^%s*;(.*)$"
 inifile.emptyregex="^%s*$"
-inifile.sectionregex="^%s*%[(.+)%]%s*$"
-inifile.settingregex="^%s*(%w+)%s*=%s*([%w%p]+)%s*$"
-inifile.stringregex="^%s*(%w+)%s*=%s*\"([^\"]*)\"%s*$"
-inifile.varregex="%%(%w+)%.(%w+)%%"
+inifile.sectionregex="^%s*%[("..namereg..")%]%s*$"
+inifile.settingregex="^%s*("..namereg..")%s*=%s*([%w%p]+)%s*$"
+inifile.stringregex="^%s*("..namereg..")%s*=%s*\"([^\"]*)\"%s*$"
+inifile.varregex="%%("..namereg..")%.("..namereg..")%%"
 
 function inifile.read(filename)
 	local iterator=io.lines(filename)
@@ -94,26 +96,37 @@ function inifile.validate(ini, data, exclusive)
 	
 	for name, section in pairs(ini) do
 		local valid=data[name] or {}
-		for key, value in pairs(section) do
-			local validator=valid[key]
-			if exclusive and not validator then
-				error("Found illegal key "..key.." in section "..name, 2)
+		if type(valid)=='table' then
+			for key, value in pairs(section) do
+				local validator=valid[key]
+				if exclusive and not validator then
+					error("Found illegal key "..key.." in section "..name, 2)
+				end
+				local vtype=type(validator)
+				local dtype=type(value)
+				if vtype=='string' and dtype~=validator then
+					error("Key "..key.." from section "..name.." is not of type "..validator, 2)
+				elseif vtype=='function' then
+					local valid, msg=validator(dtype, value, name..'.'..key)
+					if not valid then
+						error("Key "..key.." from section "..name.." is not valid: "..msg, 2)
+					end
+				end
 			end
-			local vtype=type(validator)
-			local dtype=type(value)
-			if vtype=='string' and dtype~=validator then
-				error("Key "..key.." from section "..name.." is not of type "..validator, 2)
-			elseif vtype=='function' then
-				local valid, msg=validator(dtype, value, name)
-				if not valid then
+			for key in pairs(valid) do
+				if section[key]==nil then
+					error("Missing key "..key.." in section "..name, 2)
+				end
+			end
+		elseif type(valid)=='function' then
+			for key, value in pairs(section) do
+				local ok, msg=valid(type(value), value, name..'.'..key)
+				if not ok then
 					error("Key "..key.." from section "..name.." is not valid: "..msg, 2)
 				end
 			end
-		end
-		for key in pairs(valid) do
-			if section[key]==nil then
-				error("Missing key "..key.." in section "..name, 2)
-			end
+		else
+			error('Validator must be a table or a function', 2)
 		end
 	end
 end
