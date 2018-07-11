@@ -34,9 +34,9 @@ local registers=util.merge({ -- real registers
 })
 local typedefs={
 	'proc_t', 'instruction_t',
-	'longword_t', 'ulongword_t',
-	'word_t', 'uword_t',
-	'byte_t', 'ubyte_t'
+	'ulongword_t', 'longword_t',
+	'uword_t', 'word_t',
+	'ubyte_t', 'byte_t'
 }
 
 -- lists the defines required by the instruction

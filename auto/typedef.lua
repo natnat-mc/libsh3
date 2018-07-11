@@ -83,14 +83,19 @@ end
 
 function proto:generatecode()
 	local code=self.code
+	local names={}
 	
 	-- rename the name of the current object
-	code=code:gsub(self.name, self.exportedname)
+	names[self.name]=self.exportedname
 	
-	-- replace type names by their exported counterparts
+	-- replace type names by their exported counterpart
 	for i, typeobj in ipairs(self:gettypedependencies()) do
-		code=code:gsub(typename, typeobj.exportedname)
+		names[typeobj.name]=typeobj.exportedname
 	end
+	
+	-- apply the replace function
+	local pattern="[%l%u_][%l%u%d_]*"
+	code=code:gsub(pattern, names)
 	
 	
 	header='// BEGIN auto-generated code for '..self.name..'\n'

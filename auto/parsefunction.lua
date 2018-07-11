@@ -31,7 +31,7 @@ local function parse(file, name)
 		elseif def then
 			defines[def]=defv
 		elseif not line:match(voidreg) then
-			code=code..line
+			code=code..line..'\n'
 		end
 	end
 	

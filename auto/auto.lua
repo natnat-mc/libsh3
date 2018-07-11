@@ -123,8 +123,13 @@ if genlib then
 	local deps=require 'deps'
 	local types, functions=deps('lib')
 	local header, source='', ''
+	local includes={'stdint.h', 'stdlib.h', 'stdio.h'}
+	
 	header=header.."#ifndef __LIB"..config 'general.progname':upper()..'_H\n'
 	header=header.."#define __LIB"..config 'general.progname':upper()..'_H\n'
+	for i, include in ipairs(includes) do
+		header=header.."#include <"..include..'>\n'
+	end
 	source=source.."#include \"internallib.h\"\n\n"
 	for i, typedef in ipairs(types) do
 		header=header..typedef:generatecode()..'\n'
@@ -142,6 +147,9 @@ if genlib then
 	header=''
 	header=header.."#ifndef __LIB"..config 'general.progname':upper()..'_H\n'
 	header=header.."#define __LIB"..config 'general.progname':upper()..'_H\n'
+	for i, include in ipairs(includes) do
+		header=header.."#include <"..include..'>\n'
+	end
 	header=header.."// BEGIN exported types\n"
 	for i, typedef in ipairs(types) do
 		if not typedef.internal then

@@ -91,38 +91,26 @@ function proto:getfunctiondependencies()
 	return util.merge(list)
 end
 
-function proto:getcode()
-	local code=self.code
+function proto:getcode(code)
+	code=code or self.code
+	local names={}
 	
 	-- rename the name of the current object
-	code=code:gsub(self.name, self.exportedname)
+	names[self.name]=self.exportedname
 	
-	-- replace type names by their exported counterparts
+	-- replace type names by their exported counterpart
 	for i, typeobj in ipairs(self:gettypedependencies()) do
-		code=code:gsub(typeobj.name, typeobj.exportedname)
+		names[typeobj.name]=typeobj.exportedname
 	end
 	
 	-- replace function names by their exported counterparts
 	for i, fnobj in ipairs(self:getfunctiondependencies()) do
-		code=code:gsub(fnobj.name, fnobj.exportedname)
+		ames[fnobj.name]=fnobj.exportedname
 	end
 	
-	return code
-end
-
-local function rename(self, code)
-	-- rename the name of the current object
-	code=code:gsub(self.name, self.exportedname)
-	
-	-- replace type names by their exported counterparts
-	for i, typeobj in ipairs(self:gettypedependencies()) do
-		code=code:gsub(typeobj.name, typeobj.exportedname)
-	end
-	
-	-- replace function names by their exported counterparts
-	for i, fnobj in ipairs(self:getfunctiondependencies()) do
-		code=code:gsub(fnobj.name, fnobj.exportedname)
-	end
+	-- apply the replace function
+	local pattern="[%l%u_][%l%u%d_]*"
+	code=code:gsub(pattern, names)
 	
 	return code
 end
@@ -144,7 +132,7 @@ function proto:generatecode()
 	
 	-- add defines
 	for define, value in pairs(self.defines) do
-		header=header.."#define "..define.."\t"..rename(self, value).."\n"
+		header=header.."#define "..define.."\t"..self:getcode(value).."\n"
 		footer=footer.."\n#undef "..define
 	end
 	header=#header and (header..'\n') or ''
