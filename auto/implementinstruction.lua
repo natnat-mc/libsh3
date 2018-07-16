@@ -67,9 +67,17 @@ local function getcode(instruction, imp)
 			imp.defines[register]='proc->'..register
 		end
 	end
-	
-	for i, typedef in ipairs(typedefs) do
+end
+
+-- appends dependencies to the list
+local function getdeps(instruction, imp)
+	local typedeps=util.merge(typedefs, instruction.typedeps)
+	for i, typedef in ipairs(typedeps) do
 		table.insert(imp.typedeps, typedef)
+	end
+	
+	for i, functiondep in ipairs(instruction.functiondeps) do
+		table.insert(imp.functiondeps, functiondep)
 	end
 end
 
@@ -84,6 +92,9 @@ local function implementinstruction(instruction)
 	
 	-- write the code
 	getcode(instruction, imp)
+	
+	-- append dependencies
+	getdeps(instruction, imp)
 	
 	-- finalize the 
 	imp:add()

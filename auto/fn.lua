@@ -105,7 +105,7 @@ function proto:getcode(code)
 	
 	-- replace function names by their exported counterparts
 	for i, fnobj in ipairs(self:getfunctiondependencies()) do
-		ames[fnobj.name]=fnobj.exportedname
+		names[fnobj.name]=fnobj.exportedname
 	end
 	
 	-- apply the replace function

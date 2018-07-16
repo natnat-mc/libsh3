@@ -37,6 +37,8 @@ function instruction:new(name)
 	elem.name=name
 	elem.imp={}
 	elem.doc={}
+	elem.typedeps={}
+	elem.functiondeps={}
 	elem.attributes={}
 	elem.category='none'
 	elem.type='none'

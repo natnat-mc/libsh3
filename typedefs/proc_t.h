@@ -17,5 +17,6 @@ typedef struct{
 	
 	// flags, not in registers
 	ulongword_t T, S, M, Q;
-	ulongword_t RF0, RF1;
+	ulongword_t MD, RB, BL, FD;
+	ulongword_t IMASK;
 } proc_t;

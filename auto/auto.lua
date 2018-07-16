@@ -43,6 +43,7 @@ require 'parsetypedef'
 require 'parsefunction'
 if genlib then
 	require 'implementinstruction'
+	require 'implementdecoder'
 end
 if gendoc then
 	require 'documentinstruction'
@@ -77,6 +78,13 @@ if genlib then
 	print 'Generating instruction implementations'
 	local imp=require 'implementinstruction'
 	imp()
+end
+
+-- generate the decoder if we need to
+if genlib then
+	print 'Generating instruction decoder'
+	local decoder=require 'implementdecoder'
+	decoder()
 end
 
 -- generate the documentation if we need to

@@ -7,6 +7,7 @@ local util=require 'util'
 local commandregex="@([a-z]+)%s+(.*)%s*$"
 local commentregex="//(.*)$"
 local properties={"asm", "abstract", "code", "type", "category", "exclusive"}
+local appendproperties={"typedeps", "functiondeps", "attribute", "doc"}
 
 local function parse(iterator)
 	local currentobj
@@ -32,12 +33,9 @@ local function parse(iterator)
 				end
 				currentobj:add()
 				currentobj=nil
-			elseif command=="doc" then
-				-- append to documentation
-				table.insert(currentobj.doc, arg)
-			elseif command=="attribute" then
-				-- append to attribute list
-				table.insert(currentobj.attributes, arg)
+			elseif util.contains(appendproperties, command) then
+				-- append to property list
+				table.insert(currentobj[command], arg)
 			elseif util.contains(properties, command) then
 				-- set property
 				currentobj[command]=arg
