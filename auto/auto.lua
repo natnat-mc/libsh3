@@ -50,6 +50,7 @@ if gendoc then
 end
 if genlib or genasm or gendsm then
 	require 'deps'
+	require 'generatecode'
 end
 
 -- parse the instructions
@@ -127,51 +128,7 @@ end
 
 -- generate library code
 if genlib then
-	print 'Generating internal library code'
-	local deps=require 'deps'
-	local types, functions=deps('lib')
-	local header, source='', ''
-	local includes={'stdint.h', 'stdlib.h', 'stdio.h'}
-	
-	header=header.."#ifndef __LIB"..config 'general.progname':upper()..'_H\n'
-	header=header.."#define __LIB"..config 'general.progname':upper()..'_H\n'
-	for i, include in ipairs(includes) do
-		header=header.."#include <"..include..'>\n'
-	end
-	source=source.."#include \"internallib.h\"\n\n"
-	for i, typedef in ipairs(types) do
-		header=header..typedef:generatecode()..'\n'
-	end
-	for i, fn in ipairs(functions) do
-		header=header..'// '..fn.name..'\n'
-		header=header..fn:getprototype()..'\n\n'
-		source=source..fn:generatecode()..'\n'
-	end
-	header=header.."#endif //__LIB"..config 'general.progname':upper()..'_H\n'
-	files.write(files.getfilename('output', 'internallib.h'), header)
-	files.write(files.getfilename('output', 'internallib.c'), source)
-	
-	print 'Generating exported library header'
-	header=''
-	header=header.."#ifndef __LIB"..config 'general.progname':upper()..'_H\n'
-	header=header.."#define __LIB"..config 'general.progname':upper()..'_H\n'
-	for i, include in ipairs(includes) do
-		header=header.."#include <"..include..'>\n'
-	end
-	header=header.."// BEGIN exported types\n"
-	for i, typedef in ipairs(types) do
-		if not typedef.internal then
-			header=header..typedef:generateexportedcode()..'\n'
-		end
-	end
-	header=header.."// END exported types\n\n"
-	header=header.."// BEGIN exported functions\n"
-	for i, fn in ipairs(functions) do
-		if not fn.internal then
-			header=header..fn:getprototype()..'\n'
-		end
-	end
-	header=header.."// END exported functions\n\n"
-	header=header.."#endif //__LIB"..config 'general.progname':upper()..'_H\n'
-	files.write(files.getfilename('output', 'lib.h'), header)
+	print 'Generating library code'
+	local generate=require 'generatecode'
+	generate('lib')
 end

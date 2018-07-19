@@ -97,11 +97,7 @@ function proto:generatecode()
 	local pattern="[%l%u_][%l%u%d_]*"
 	code=code:gsub(pattern, names)
 	
-	
-	header='// BEGIN auto-generated code for '..self.name..'\n'
-	footer='\n// END auto-generated code for '..self.name
-	
-	return header..code..footer
+	return code
 end
 
 function proto:generateexportedcode()
