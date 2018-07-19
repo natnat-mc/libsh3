@@ -19,19 +19,21 @@ local params={
 	['i']={'i'},
 	['ni']={'n', 'i'}
 }
-local registers=util.merge({ -- real registers
+local registers={
 	'R',
 	'PC', 'PR', 'SPC',
-	'SSR',
-	'GBR', 'VBR',
+	'GBR', 'VBR', 'SSR',
 	'MACH', 'MACL'
-},{ -- flags, stored by themselves for faster access
+}
+local flags={
 	'T',
-	'S',
-	'M',
-	'Q',
-	'RF0', 'RF1'
-})
+	'S', 'M', 'Q',
+	'MD',
+	'RB',
+	'BL',
+	'FD',
+	'IMASK'
+}
 local typedefs={
 	'proc_t', 'instruction_t',
 	'ulongword_t', 'longword_t',
@@ -64,7 +66,12 @@ local function getcode(instruction, imp)
 	local impcode=table.concat(instruction.imp, '\n')
 	for i, register in ipairs(registers) do
 		if impcode:match(register) then
-			imp.defines[register]='proc->'..register
+			imp.defines[register]='proc->registers.'..register
+		end
+	end
+	for i, flag in ipairs(flags) do
+		if impcode:match(flag) then
+			imp.defines[flag]='proc->flags.'..flag
 		end
 	end
 end

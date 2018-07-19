@@ -19,9 +19,9 @@ end
 local function convertlist(list)
 	local code={}
 	for mask, instructions in pairs(list) do
-		table.insert(code, "switch(word&0x"..mask..") {")
+		table.insert(code, "switch(word&0x"..mask:sub(2, 4)..") {")
 		for i, inst in ipairs(instructions) do
-			table.insert(code, "\tcase 0x"..inst.code..":")
+			table.insert(code, "\tcase 0x"..inst.code:sub(2, 4)..":")
 			table.insert(code, "\t\t// "..inst.name)
 			if inst.priv then
 				table.insert(code, "\t\tif(!priv) return -1;")
