@@ -2,7 +2,9 @@ DEPENDS(ulongword_t)
 DEPENDS(longword_t)
 DEPENDS(word_t)
 
-typedef struct {
+TYPE(struct)
+
+typedef struct proc_t {
 	/* processor registers
 	 * these are registers that are accessible via instructions
 	 * these do not have a dedicated memory address

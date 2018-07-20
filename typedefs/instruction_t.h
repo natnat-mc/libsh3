@@ -1,8 +1,10 @@
 DEPENDS(word_t)
 
-INTERNAL(typedef union WORD {
+TYPE(union)
+
+INTERNAL(typedef union instruction_t {
 	word_t word;
 	struct {
-		unsigned x:16
+		unsigned x:16;
 	} fmt_0;
 } instruction_t;)

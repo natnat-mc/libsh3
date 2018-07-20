@@ -4,6 +4,7 @@ local config=require 'config'
 
 local function generateheader(name, functions, types, includes, defines)
 	local code=''
+	local usestatic=not config 'static.exportinternal'
 	
 	-- generate ifndef header
 	local ifndef='__'..name:gsub('%l', string.upper):gsub('%.', '_')
@@ -26,15 +27,44 @@ local function generateheader(name, functions, types, includes, defines)
 	end
 	code=code.."\n"
 	
-	-- add typedefs
+	-- add trivial typedefs
 	for i, typedef in ipairs(types or {}) do
-		code=code.."// "..typedef.name.."\n"
-		code=code..typedef:generatecode().."\n\n"
+		if typedef.type=='trivial' then
+			code=code.."// declaration of type "..typedef.name.."\n"
+			code=code..typedef:generatecode().."\n\n"
+		end
+	end
+	
+	-- add struct and union opaque types
+	for i, typedef in ipairs(types or {}) do
+		if typedef.type=='struct' or typedef.type=='union' then
+			code=code.."// initial declaration of "..typedef.type.." type "..typedef.name.."\n"
+			code=code.."typedef "..typedef.type.." "..typedef.exportedname.." "..typedef.exportedname..";\n\n"
+		end
+	end
+	
+	-- add method types
+	for i, typedef in ipairs(types or {}) do
+		if typedef.type=='function' then
+			code=code.."// declaration of function type "..typedef.name.."\n"
+			code=code..typedef:generatecode().."\n\n"
+		end
+	end
+	
+	-- add the real struct and union type
+	for i, typedef in ipairs(types or {}) do
+		if typedef.type=='struct' or typedef.type=='union' then
+			code=code.."// final declaration of "..typedef.type.." type "..typedef.name.."\n"
+			code=code..typedef:generatecode().."\n\n"
+		end
 	end
 	
 	-- add prototypes
 	for i, fn in ipairs(functions or {}) do
 		code=code.."// "..fn.name.."\n"
+		if fn.internal and usestatic then
+			code=code.."static "
+		end
 		code=code..fn:getprototype().."\n\n"
 	end
 	

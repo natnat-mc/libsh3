@@ -63,6 +63,7 @@ fmt.shared.name='string'
 fmt.static={}
 fmt.static.generate='boolean'
 fmt.static.name='string'
+fmt.static.exportinternal='boolean'
 
 -- [assembler]
 -- controls the generation of the assembler

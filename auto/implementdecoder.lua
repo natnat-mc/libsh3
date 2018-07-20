@@ -11,8 +11,8 @@ local typedefs={'word_t', 'instruction_fn_t'}
 local hexdigits={'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'}
 
 local function getcodeandmask(inst)
-	local code=util.itohex(util.bintoi(inst.code:gsub('%l', '0')))
-	local mask=util.itohex(util.bintoi(inst.code:gsub('0', '1'):gsub('%l', '0')))
+	local code=util.itohex(util.bintoi(inst.code:gsub('%l', '0')), 4)
+	local mask=util.itohex(util.bintoi(inst.code:gsub('0', '1'):gsub('%l', '0')), 4)
 	return code, mask
 end
 

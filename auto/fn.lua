@@ -132,8 +132,10 @@ function proto:generatecode()
 	
 	-- add defines
 	for define, value in pairs(self.defines) do
+		local parenthesisoffset=define:find('%(') or 0
+		local defname=define:sub(1, parenthesisoffset-1)
 		header=header.."#define "..define.."\t"..self:getcode(value).."\n"
-		footer=footer.."\n#undef "..define
+		footer=footer.."\n#undef "..defname
 	end
 	header=#header and (header..'\n') or ''
 	footer=#footer and ('\n'..footer) or ''

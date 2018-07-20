@@ -6,8 +6,9 @@ doc
 nohup.out
 .*~
 
-# anything in OLD
+# anything in OLD or test
 OLD
+test
 
 # development resources
 resources

@@ -30,7 +30,7 @@ t3=tm;
 
 // get high and low parts for multiplication
 rnL=t1&0xffff;
-rnH=(t1>>16)&0ffff;
+rnH=(t1>>16)&0xffff;
 rmL=t2&0xffff;
 rmH=(t2>>16)&0xffff;
 
@@ -89,13 +89,13 @@ rmH=(R[m]>>16)&0xffff;
 
 // do the 32bit multiplications without overflow
 t0=rmL*rnL;
-r1=rmH*rnL;
-r2=rmL*rnH;
-r3=rmH*rnH;
+t1=rmH*rnL;
+t2=rmL*rnH;
+t3=rmH*rnH;
 
 // merge everything
 r2=0;
-r1=r1+r2;
+r1=t1+t2;
 if(r1<t1) r2+=0x10000;
 
 t1=(r1<<16)&0xffff0000;

@@ -222,14 +222,16 @@ function util.itoa(number, base)
 		return str
 	end
 end
-function util.itohex(number)
-	return util.itoa(number, 16)
+function util.itohex(number, digits)
+	local n=util.itoa(number, 16)
+	return ('0'):rep(digits-#n)..n
 end
 function util.itodec(number)
 	return util.itoa(number, 10)
 end
-function util.itobin(number)
-	return util.itoa(number, 2)
+function util.itobin(number, digits)
+	local n=util.itoa(number, 2)
+	return ('0'):rep(digits-#n)..n
 end
 
 -- string to number conversion
