@@ -18,6 +18,11 @@ delay_slot(t+2);
 @type m
 @category branch
 
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
+
 longword_t t=PC;
 PC+=R[m];
 delay_slot(t+2);
@@ -43,6 +48,11 @@ delay_slot(PR+2);
 @code 0000mmmm00000011
 @type m
 @category branch
+
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
 
 PR=PC;
 PC+=R[m];

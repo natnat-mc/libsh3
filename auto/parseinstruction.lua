@@ -6,8 +6,8 @@ local util=require 'util'
 
 local commandregex="@([a-z]+)%s+(.*)%s*$"
 local commentregex="//(.*)$"
-local properties={"asm", "abstract", "code", "type", "category", "exclusive"}
-local appendproperties={"typedeps", "functiondeps", "attribute", "doc"}
+local properties={"asm", "abstract", "code", "type", "category"}
+local appendproperties={"typedeps", "functiondeps", "attribute", "doc", "model"}
 
 local function parse(iterator)
 	local currentobj

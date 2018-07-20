@@ -2,7 +2,7 @@ local deps=require 'deps'
 local files=require 'files'
 local config=require 'config'
 
-local function generateheader(name, functions, types, includes)
+local function generateheader(name, functions, types, includes, defines)
 	local code=''
 	
 	-- generate ifndef header
@@ -13,6 +13,16 @@ local function generateheader(name, functions, types, includes)
 	-- include required libs
 	for i, include in ipairs(includes or {}) do
 		code=code.."#include <"..include..">\n"
+	end
+	code=code.."\n"
+	
+	-- define everything that should be defined
+	for i, define in ipairs(defines or {}) do
+		if type(define)=='string' then
+			code=code.."#define "..define.."\n"
+		else
+			code=code.."#define "..(define.name or define[1]).."\t"..(define.value or define[2]).."\n"
+		end
 	end
 	code=code.."\n"
 	
@@ -38,7 +48,7 @@ local function generatesource(header, functions, includes)
 	local code=''
 	
 	-- add includes
-	code=code.."#include \""..code.."\"\n\n"
+	code=code.."#include \""..header.."\"\n\n"
 	for i, include in ipairs(includes or {}) do
 		code=code.."#include <"..include..">\n"
 	end
@@ -59,11 +69,34 @@ local function generate(target)
 	
 	if target=='lib' then
 		local includes={'stdint.h', 'stdlib.h'}
-		local name='lib'..config 'general.progname'..'.h'
+		local name='lib'..config 'general.model'..'.h'
+		local defines={}
+		
+		
+		local function set(key, value)
+			if type(value)=='string' then
+				table.insert(defines, {key:upper(), '\"'..value..'\"'})
+			elseif type(value)=='number' then
+				table.insert(defines, {key:upper(), value})
+			elseif type(value)=='boolean' and value or true then
+				table.insert(defines, key:upper())
+			end
+		end
+		
+		-- define general constants
+		set('progname', config 'general.progname')
+		set('model', config 'general.model')
+		set('mpu', config 'general.mpu')
+		set('version', config 'general.version')
+		set('debug', config 'general.debug')
+		
+		-- define model and MPU macros
+		set(config 'general.model')
+		set(config 'general.mpu')
 		
 		-- generate library code
-		local internalheader=generateheader(name, functions, types, includes)
-		local internalsource=generatesource(name, functions, includes)
+		local internalheader=generateheader(name, functions, types, includes, defines)
+		local internalsource=generatesource('internallib.h', functions, includes)
 		
 		-- discriminate public types and functions
 		local publictypes, publicfunctions={}, {}

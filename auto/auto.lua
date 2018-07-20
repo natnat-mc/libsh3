@@ -100,32 +100,6 @@ if gendoc then
 	end
 end
 
--- list all dependencies for all targets
-if genlib or genasm or gendsm then
-	print 'Listing all dependencies for targets'
-	local deps=require 'deps'
-	local function printdeps(target)
-		local types, functions=deps(target)
-		print('Required types for target '..target..': ('..#types..')')
-		for i, t in ipairs(types) do
-			print('-> '..t.name, '('..t.exportedname..')')
-		end
-		print('Required functions for target '..target..': ('..#functions..')')
-		for i, f in ipairs(functions) do
-			print('-> '..f.name, '('..f.exportedname..')')
-		end
-	end
-	if genlib then
-		printdeps('lib')
-	end
-	if genasm then
-		printdeps('assembler')
-	end
-	if gendsm then
-		printdeps('disassembler')
-	end
-end
-
 -- generate library code
 if genlib then
 	print 'Generating library code'

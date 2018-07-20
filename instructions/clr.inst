@@ -18,6 +18,11 @@ PC+=2;
 @type 0
 @category control
 
+
+@model sh3
+@model sh4
+@model sh4a
+
 S=0;
 PC+=2;
 

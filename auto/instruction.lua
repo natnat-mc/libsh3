@@ -28,7 +28,7 @@ local validcategories={
 	'sysctl'
 }
 
-local model='\"'..config.get 'general.model'..'\""'
+local model=config.get 'general.model'
 -- END misc variables
 
 -- constructor
@@ -40,6 +40,7 @@ function instruction:new(name)
 	elem.typedeps={}
 	elem.functiondeps={}
 	elem.attributes={}
+	elem.model={}
 	elem.category='none'
 	elem.type='none'
 	setmetatable(elem, meta)
@@ -71,7 +72,7 @@ function proto:add()
 	if util.contains(instruction.list, self) then
 		return true
 	end
-	if self.exclusive=='any' or self.exclusive:match(model) then
+	if #self.model==0 or util.contains(self.model, model) then
 		table.insert(instruction.list, self)
 		instruction.byname[self.name]=self
 		instruction.bycode[self.code]=self
@@ -103,9 +104,6 @@ function proto:validate()
 	end
 	if not util.contains(validcategories, self.category) then
 		return false, "Invalid category "..self.category
-	end
-	if not self.exclusive then
-		self.exclusive='any'
 	end
 	return true
 end

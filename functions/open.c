@@ -1,6 +1,6 @@
 DEPENDS(proc_t, t)
 
-DEPENDS(setSR, f)
+DEPENDS(invalidatePipeline, f)
 
 proc_t *open() {
 	// allocate a struct
@@ -20,6 +20,9 @@ proc_t *open() {
 	
 	// set VBR to 0x00000000
 	sh3->VBR=0x00000000;
+	
+	// invalidate the instruction pipeline
+	invalidatePipeline(sh3);
 	
 	// return said struct
 	return sh3;

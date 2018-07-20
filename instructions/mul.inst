@@ -5,6 +5,11 @@
 @type nm
 @category arithmetic
 
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
+
 @doc multiplies Rn and Rm (32bit*32bit)
 @doc stores the 64bit result in MACH:MACL
 @doc uses signed arithmetic
@@ -63,6 +68,11 @@ PC+=2;
 @code 0011nnnnmmmm0101
 @type nm
 @category arithmetic
+
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
 
 @doc multiplies Rn and Rm (32bit*32bit)
 @doc stores the 64bit result in MACH:MACL

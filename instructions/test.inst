@@ -5,6 +5,11 @@
 @type n
 @category arithmetic
 
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
+
 @doc decrements Rn and checks if it is null
 
 R[n]--;

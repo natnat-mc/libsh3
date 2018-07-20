@@ -17,6 +17,11 @@ else PC+=(SIGN_EXTEND8(d)<<1)+4;
 @type d
 @category branch
 
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
+
 longword_t t=PC;
 if(T) PC+=2;
 else {
@@ -44,6 +49,11 @@ else PC+=(SIGN_EXTEND8(d)<<1)+4;
 @code 10001101dddddddd
 @type d
 @category branch
+
+@model sh2
+@model sh3
+@model sh4
+@model sh4a
 
 longword_t t=PC;
 if(!T) PC+=2;
