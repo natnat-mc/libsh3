@@ -23,7 +23,7 @@ tn=R[n];
 tm=R[m];
 if(tn<0) tn=-tn;
 if(tm<0) tm=-tm;
-fL=(R[n][m]<0)?-1:0;
+fL=((R[n]^R[m])<0)?-1:0;
 
 t1=tn;
 t3=tm;

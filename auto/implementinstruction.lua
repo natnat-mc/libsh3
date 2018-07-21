@@ -54,7 +54,7 @@ local typedefs={
 -- lists the defines required by the instruction
 local function getdefines(instruction, imp)
 	for i, param in ipairs(params[instruction.type]) do
-		local value='(((instruction_t) word).type_'..instruction.type..'.'..param..')'
+		local value='(((instruction_t) word).fmt_'..instruction.type..'.'..param..')'
 		imp.defines[param]=value
 	end
 end
