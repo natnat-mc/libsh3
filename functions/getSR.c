@@ -16,6 +16,7 @@ INTERNAL(longword_t getSR(proc_t *sh3) {
 	// interrupt mask
 	SR.IMASK=sh3->IMASK;
 	
+#if defined(LEAST_SH3)
 	// FPU disable
 	SR.FD=sh3->FD;
 	
@@ -27,6 +28,7 @@ INTERNAL(longword_t getSR(proc_t *sh3) {
 	
 	// operating mode
 	SR.MD=sh3->MD;
+#endif
 	
 	return SR.word;
 })

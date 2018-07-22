@@ -17,26 +17,38 @@ typedef struct proc_t {
 		 */
 		longword_t R[16];
 		
-		/* PC-related registers
-		 * PC is the program counter, the address in RAM at which the instructions will be fetched
-		 * PR is the subroutine register, in which PC is stored when calling a subroutine
-		 * SPC is the save PC register, in which PC is stored when entering exception processing mode
+		/* system registers
+		 * PC is the program counter, the address at which the processor starts to prefetch instructions
+		 * PR is the procedure register, in which the PC is stored on subroutine call
+		 * MACH and MACL are the destination registers for multiply and MAC instruction
+		 * FPUSCR (SH4+ with FPU) is the FPU control register
+		 * FPUL (SH4+ with FPU) is the floating point communication register
 		 */
-		longword_t PC, PR, SPC;
-		
-		/* multiplication registers
-		 * these form a 64bit word
-		 * these registers are written by multiplication instructions
-		 */
+		longword_t PC, PR;
 		longword_t MACH, MACL;
+#if defined(LEAST_SH4)&&!defined(NOFPU)
+		longword_t FPUSCR, FPUL;
+#endif
 		
-		/* system and control registers
-		 * VBR is the base address of the interrupt handler
-		 * GBR is the base address at which to start reading memory
-		 * SSR is the save status register, in which SR is stored when entering exception processing mode
+		/* control registers
+		 * SR (actually stored as individual flags) is the status register which is responsible for tracking the current state of the CPU
+		 * VBR is the vector base register, the base address used to calculate jump address in case of interrupt or exception
+		 * GBR is the general base register, the base address used in GBR indirect addressing mode
+		 * SPC (SH3+) is the save program counter register, in which the PC is stored on interrupt or exception
+		 * SSR (SH3+) is the save status register, in which the SR is stored on interrupt or exception
+		 * SGR (SH4A) is the save general register, in which R15 is stored on interrupt or exception
+		 * DBR (SH4+) is the debug base register, which is used instead of VBR when debug mode is enabled
 		 */
 		longword_t VBR, GBR;
-		longword_t SSR;
+#if defined(LEAST_SH3)
+		longword_t SPC, SSR;
+#endif
+#if defined(SH4A)
+		longword_t SGR;
+#endif
+#if defined(LEAST_SH4)
+		longword_t DBR
+#endif
 	} registers;
 	
 	/* flags
@@ -46,7 +58,9 @@ typedef struct proc_t {
 	 */
 	struct {
 		ulongword_t T, S, M, Q;
+#if defined(LEAST_SH3)
 		ulongword_t MD, RB, BL, FD;
+#endif
 		ulongword_t IMASK;
 	} flags;
 	

@@ -7,31 +7,47 @@ INTERNAL(typedef union sr_t {
 	struct {
 		unsigned:1;
 		
-		/* operating mode
+		/* operating mode (SH3+)
 			* 1: privileged mode
 			* 0: user mode
 			*/
+#if defined(LEAST_SH3)
 		unsigned MD:1;
+#else
+		unsigned:1;
+#endif
 		
-		/* register bank
+		/* register bank (SH3+)
 			* 1: bank 1
 			* 0: register 0
 			*/
+#if defined(LEAST_SH3)
 		unsigned RB:1;
+#else
+		unsigned:1
+#endif
 		
-		/* block
+		/* exception block (SH3+)
 			* 1: blocks exceptions
 			* 0: accepts exceptions
 			*/
+#if defined(LEAST_SH3)
 		unsigned BL:1;
+#else
+		unsigned:1
+#endif
 		
 		unsigned:12;
 		
-		/* FPU disable
+		/* FPU disable (SH3+)
 			* 1: disable FPU and throws exceptions
 			* 0: enables FPU
 			*/
+#if defined(LEAST_SH3)
 		unsigned FD:1;
+#else
+		unsigned:1
+#endif
 		
 		unsigned:5;
 		

@@ -16,6 +16,7 @@ INTERNAL(void setSR(proc_t *sh3, longword_t data) {
 	// interrupt mask
 	sh3->IMASK=SR.IMASK;
 	
+#if defined(LEAST_SH3)
 	// FPU disable
 	sh3->FD=SR.FD;
 	
@@ -27,4 +28,5 @@ INTERNAL(void setSR(proc_t *sh3, longword_t data) {
 	
 	// operating mode
 	sh3->MD=SR.MD;
+#endif
 })

@@ -26,6 +26,7 @@ This file contains the list of all the templates used by the auto-magical genera
 
 # ToDo list
 * implement all instructions  
+* add banked registers, which should be swapped when calling setSR  
 * then check for the NOP code to invalidate the pipeline  
 * implement the processor correctly  
 * implement peripherals according to the spec  

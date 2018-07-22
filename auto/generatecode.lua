@@ -124,6 +124,18 @@ local function generate(target)
 		set(config 'general.model')
 		set(config 'general.mpu')
 		
+		-- define base level macros
+		local baselevel={
+			['sh4a']={'sh4a', 'sh4', 'sh3', 'sh2', 'sh1'},
+			['sh4']={'sh4', 'sh3', 'sh2', 'sh1'},
+			['sh3']={'sh3', 'sh2', 'sh1'},
+			['sh2']={'sh2', 'sh1'},
+			['sh1']={'sh1'}
+		}
+		for i, base in ipairs(baselevel[config 'general.model'] or {}) do
+			set('least_'..base)
+		end
+		
 		-- generate library code
 		local internalheader=generateheader(name, functions, types, includes, defines)
 		local internalsource=generatesource('internallib.h', functions, includes)
