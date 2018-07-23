@@ -26,6 +26,8 @@ function typedef:new(name, internal)
 	instance.name=name
 	instance.internal=internal and true or false
 	instance.exportedname=typedef:getexportedname(name, internal)
+	instance.type='trivial'
+	instance.opaque=false
 	
 	-- data seen by the function
 	instance.typedeps={}

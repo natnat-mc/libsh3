@@ -1,6 +1,6 @@
 # Super-H emulator
 The type of processor and its options are controlled at config time.  
-A huge part of the code is generated auto-magically by the lua code in `auto`; this allows for automatic generation of documentation, instruction implementation code, decoder code and assembler code.  
+A huge part of the code is generated auto-magically by the lua code in `auto`; this allows for automatic generation of documentation, instruction implementation code, decoder code and assembler code.
 
 # Configuration files
 These files, in `ini` format are responsible for controlling the generation of the library.
@@ -20,13 +20,12 @@ This file contains the list of all the templates used by the auto-magical genera
 * SH2  
 * SH3  
 * SH4  
-* SH4-A  
+* SH4A  
 * potentially SH3-DSP  
-* potentially SH2-A if I find a way to handle dual-word instructions  
+* potentially SH2A if I find a way to handle dual-word instructions  
 
 # ToDo list
 * implement all instructions  
-* add banked registers, which should be swapped when calling setSR  
 * then check for the NOP code to invalidate the pipeline  
 * implement the processor correctly  
 * implement peripherals according to the spec  

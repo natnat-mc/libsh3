@@ -4,6 +4,7 @@ DEPENDS(word_t)
 DEPENDS(instruction_f_t)
 
 TYPE(struct)
+OPAQUE(true)
 
 typedef struct proc_t {
 	/* processor registers
@@ -68,11 +69,11 @@ typedef struct proc_t {
 	 * also, this means that SR isn't stored in this struct and must be reconstructed
 	 */
 	struct {
-		ulongword_t T, S, M, Q;
+		int T, S, M, Q;
 #if defined(LEAST_SH3)
-		ulongword_t MD, RB, BL, FD;
+		int MD, RB, BL, FD;
 #endif
-		ulongword_t IMASK;
+		int IMASK;
 	} flags;
 	
 	/* instruction pipeline
@@ -81,5 +82,6 @@ typedef struct proc_t {
 	struct {
 		word_t inst0, inst1;
 		instruction_f_t inst;
+		int delayed;
 	} pipeline;
 } proc_t;

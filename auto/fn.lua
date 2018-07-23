@@ -120,7 +120,6 @@ function proto:generatecode()
 	
 	-- add includes
 	local header, footer='', ''
-	header='// BEGIN auto-generated code for function '..self.name..'\n'
 	for i, include in ipairs(self.includes) do
 		if include:match('^<[^>]+>$') then
 			header=header.."#include "..include.."\n"
@@ -128,7 +127,6 @@ function proto:generatecode()
 			header=header.."#include \""..include.."\"\n"
 		end
 	end
-	header=#header and (header..'\n') or ''
 	
 	-- add defines
 	for define, value in pairs(self.defines) do
@@ -137,12 +135,8 @@ function proto:generatecode()
 		header=header.."#define "..define.."\t"..self:getcode(value).."\n"
 		footer=footer.."\n#undef "..defname
 	end
-	header=#header and (header..'\n') or ''
-	footer=#footer and ('\n'..footer) or ''
 	
-	footer=footer..'\n// END auto-generated code for function '..self.name
-	
-	return header..code..footer..'\n'
+	return header..code..footer
 end
 
 function proto:getprototype()

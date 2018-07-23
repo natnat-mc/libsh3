@@ -104,6 +104,7 @@ local function generate()
 	code=code.."\tstatic int (*subs[16]) (word_t, int, int, instruction_fn_t*)={\n\t\t"
 	code=code..table.concat(subs, ',\n\t\t')
 	code=code.."\n\t};\n"
+	code=code.."*out=NULL;\n"
 	code=code.."\treturn subs[(word>>12)&0xf](word, priv, delay, out);\n"
 	code=code.."}\n"
 	
