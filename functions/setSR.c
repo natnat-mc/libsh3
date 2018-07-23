@@ -2,6 +2,8 @@ DEPENDS(proc_t, t)
 DEPENDS(longword_t, t)
 DEPENDS(sr_t, t)
 
+DEPENDS(swapBank, f)
+
 INTERNAL(void setSR(proc_t *sh3, longword_t data) {
 	// initialize SR to zeros
 	sr_t SR;
@@ -24,6 +26,7 @@ INTERNAL(void setSR(proc_t *sh3, longword_t data) {
 	sh3->BL=SR.BL;
 	
 	// register bank
+	if(sh3->RB!=SR.RB) swapBank(sh3);
 	sh3->RB=SR.RB;
 	
 	// operating mode

@@ -1,6 +1,7 @@
 DEPENDS(ulongword_t)
 DEPENDS(longword_t)
 DEPENDS(word_t)
+DEPENDS(instruction_f_t)
 
 TYPE(struct)
 
@@ -16,6 +17,16 @@ typedef struct proc_t {
 		 * R15 is also the stack pointer
 		 */
 		longword_t R[16];
+		
+		/* banked out general purpose registers (SH3+)
+		 * these are the R0-R7 that are not currently being used
+		 * these are swapped when RB changes
+		 * the swap function is swapBank and is internal
+		 * it is called by setSR
+		 */
+#if defined(LEAST_SH3)
+		longword_t RB[8];
+#endif
 		
 		/* system registers
 		 * PC is the program counter, the address at which the processor starts to prefetch instructions
@@ -65,9 +76,10 @@ typedef struct proc_t {
 	} flags;
 	
 	/* instruction pipeline
-	 * contains the instruction fetched from RAM
+	 * contains the instruction fetched from RAM and the decoded instruction
 	 */
 	struct {
 		word_t inst0, inst1;
+		instruction_f_t inst;
 	} pipeline;
 } proc_t;
