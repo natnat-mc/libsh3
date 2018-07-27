@@ -5,8 +5,9 @@
 @type m
 @category sysctl
 
-@attribute priv
-@attribute nodelay
+@attributes priv
+@attributes nodelay
+@functiondeps setSR
 
 @doc loads the status register (SR) from the register Rm
 
@@ -22,48 +23,16 @@ PC+=2;
 @type m
 @category sysctl
 
-@attribute priv
-@attribute nodelay
+@attributes priv
+@attributes nodelay
+@functiondeps setSR
 
 @doc loads the status register (SR) from RAM at address Rm
 @doc load address must be on longword boundary
 @doc also adds 4 to Rm to enable loading multiple registers from RAM
 
-setSR(proc, read_longword(R[m]));
+setSR(proc, read_long(R[m]));
 R[m]+=4;
 PC+=2;
 
 @end LDCM_SR
-
-@begin LDC_GBR
-@asm LDC Rm,GBR
-@abstract Rm->GBR
-@code 0100mmmm00011110
-@type m
-@category sysctl
-
-@doc loads the global base register (GBR) from the register Rm
-@doc unlike other `LDC` instructions, this instruction can be executed in user mode
-
-GBR=R[m];
-PC+=2;
-
-@end LDC_GBR
-
-@begin LDCM_GBR
-@asm LDC.L @Rm+,GBR
-@abstract (Rm)->GBR, Rm+=4
-@code 0100mmmm00010111
-@type m
-@category sysctl
-
-@doc loads the global base register (GBR) from RAM at address Rm
-@doc load address must be on longword boundary
-@doc also adds 4 to Rm to enable loading multiple registers from RAM
-@doc unlike other `LDC` instructions, this instruction can be executed in user mode
-
-GBR=read_longword(R[m]);
-R[m]+=4;
-PC+=2;
-
-@end LDCM_GBR

@@ -9,6 +9,7 @@ inifile.emptyregex="^%s*$"
 inifile.sectionregex="^%s*%[("..namereg..")%]%s*$"
 inifile.settingregex="^%s*("..namereg..")%s*=%s*([%w%p]+)%s*$"
 inifile.stringregex="^%s*("..namereg..")%s*=%s*\"([^\"]*)\"%s*$"
+inifile.trueregex="^%s*("..namereg..")%s*$"
 inifile.varregex="%%("..namereg..")%.("..namereg..")%%"
 
 function inifile.read(filename)
@@ -24,6 +25,7 @@ function inifile.read(filename)
 		local sec=line:match(inifile.sectionregex)
 		local key, value=line:match(inifile.settingregex)
 		local keystr, valuestr=line:match(inifile.stringregex)
+		local truekey=line:match(inifile.trueregex)
 		
 		if sec then
 			if section then
@@ -31,6 +33,11 @@ function inifile.read(filename)
 			end
 			section={}
 			name=sec
+		elseif truekey then
+			if not section then
+				error("Attempt to write without a section at line "..lineno, 2)
+			end
+			section[truekey]=true
 		elseif keystr then
 			if not section then
 				error("Attempt to write without a section at line "..lineno, 2)
@@ -123,6 +130,12 @@ function inifile.validate(ini, data, exclusive)
 				local ok, msg=valid(type(value), value, name..'.'..key)
 				if not ok then
 					error("Key "..key.." from section "..name.." is not valid: "..msg, 2)
+				end
+			end
+		elseif type(valid)=='string' then
+			for key, value in pairs(section) do
+				if type(value)~=valid then
+					error("Key "..key.." from section "..name.." is not of type "..valid, 2)
 				end
 			end
 		else

@@ -20,77 +20,68 @@ local function contains(...)
 		return true
 	end)
 end
-
-local function oneof(...)
-	local set={...}
-	return (function(t, v, n)
-		if not util.contains(set, v) then
-			return false, n.." must be one of "..table.concat(set, ', ')
-		end
-		return true
-	end)
-end
 -- END argument check functions
 
 -- BEGIN format
-local fmt={}
+do
+	local fmt={}
 
--- [general]
--- controls general information about the program
-fmt.general={}
-fmt.general.model=oneof('sh3', 'sh3dsp', 'sh4', 'sh4a')
-fmt.general.mpu='string'
-fmt.general.version='number'
-fmt.general.progname='string'
-fmt.general.debug='boolean'
+	-- [general]
+	-- controls general information about the program
+	fmt.general={}
+	fmt.general.model='string'
+	fmt.general.version='number'
+	fmt.general.progname='string'
+	fmt.general.debug='boolean'
 
--- [naming]
--- controls how the functions are named
-fmt.naming={}
-fmt.naming.exportfunction=contains('%%name%%', '%%mangle%%')
-fmt.naming.internalfunction=contains('%%name%%', '%%mangle%%')
-fmt.naming.exporttype=contains('%%name%%', '%%mangle%%')
-fmt.naming.internaltype=contains('%%name%%', '%%mangle%%')
+	-- [naming]
+	-- controls how the functions are named
+	fmt.naming={}
+	fmt.naming.exportfunction=contains('%%name%%', '%%mangle%%')
+	fmt.naming.internalfunction=contains('%%name%%', '%%mangle%%')
+	fmt.naming.exporttype=contains('%%name%%', '%%mangle%%')
+	fmt.naming.internaltype=contains('%%name%%', '%%mangle%%')
 
--- [shared]
--- controls the generation of the shared library
-fmt.shared={}
-fmt.shared.generate='boolean'
-fmt.shared.name='string'
+	-- [shared]
+	-- controls the generation of the shared library
+	fmt.shared={}
+	fmt.shared.generate='boolean'
+	fmt.shared.name='string'
 
--- [static]
--- controls the generation of the static library
-fmt.static={}
-fmt.static.generate='boolean'
-fmt.static.name='string'
-fmt.static.exportinternal='boolean'
+	-- [static]
+	-- controls the generation of the static library
+	fmt.static={}
+	fmt.static.generate='boolean'
+	fmt.static.name='string'
+	fmt.static.exportinternal='boolean'
 
--- [assembler]
--- controls the generation of the assembler
-fmt.assembler={}
-fmt.assembler.generate='boolean'
-fmt.assembler.name='string'
+	-- [assembler]
+	-- controls the generation of the assembler
+	fmt.assembler={}
+	fmt.assembler.generate='boolean'
+	fmt.assembler.name='string'
 
--- [disassembler]
--- controls the generation of the disassembler
-fmt.disassembler={}
-fmt.disassembler.generate='boolean'
-fmt.disassembler.name='string'
+	-- [disassembler]
+	-- controls the generation of the disassembler
+	fmt.disassembler={}
+	fmt.disassembler.generate='boolean'
+	fmt.disassembler.name='string'
 
--- [doc]
--- controls the generation of the documentation
-fmt.doc={}
-fmt.doc.generate='boolean'
+	-- [doc]
+	-- controls the generation of the documentation
+	fmt.doc={}
+	fmt.doc.generate='boolean'
 
--- [compile]
--- controls the compilation process
-fmt.compile={}
-fmt.compile.CC='string'
-fmt.compile.LD='string'
-fmt.compile.CFLAGS='string'
-fmt.compile.LFLAGS='string'
+	-- [compile]
+	-- controls the compilation process
+	fmt.compile={}
+	fmt.compile.CC='string'
+	fmt.compile.LD='string'
+	fmt.compile.CFLAGS='string'
+	fmt.compile.LFLAGS='string'
 
-inifile.validate(cfg, fmt)
+	inifile.validate(cfg, fmt)
+end
 -- END format
 
 local config={}

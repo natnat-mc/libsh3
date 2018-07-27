@@ -1,0 +1,35 @@
+@begin STC_SR
+@asm STC SR,Rn
+@abstract SR -> Rn
+@code 0000nnnn00000010
+@type n
+@category sysctl
+
+@attributes priv
+@functiondeps getSR
+
+@doc stores the status register into the general register Rn
+
+R[n]=getSR(sh3);
+PC+=2;
+
+@end STC_SR
+
+@begin STCM_SR
+@asm STC.L SR,@-Rn
+@abstract Rn-4 -> Rn, SR -> (Rn)
+@code 0100nnnn00000011
+@type n
+@category sysctl
+
+@attributes priv
+@functiondeps getSR
+
+@doc stores the status register into memory at address Rn
+@doc subtracts 4 from Rn before operation
+
+R[n]-=4;
+write_long(sh3, R[n], getSR(sh3));
+PC+=2;
+
+@end STCM_SR

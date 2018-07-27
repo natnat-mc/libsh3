@@ -7,6 +7,12 @@
 print 'Reading the ini files'
 local files=require 'files'
 local config=require 'config'
+local models=require 'models'
+
+-- sanity check
+if not models[config 'general.model'] then
+	error('No such model: '..config 'general.model')
+end
 
 -- see what we need to generate
 print 'Checking what we need to generate'
@@ -20,6 +26,8 @@ if genstatic then
 end
 local genlib=genshared or genstatic
 if genlib then
+	print '-> The proc_t struct'
+	print '-> the sr_t union'
 	print '-> The processor instruction implementations'
 	print '-> The decoder'
 end
@@ -41,9 +49,12 @@ print 'Loading required modules'
 require 'parseinstruction'
 require 'parsetypedef'
 require 'parsefunction'
+require 'implementldst'
 if genlib then
 	require 'implementinstruction'
 	require 'implementdecoder'
+	require 'implementproc'
+	require 'implementsr'
 end
 if gendoc then
 	require 'documentinstruction'
@@ -51,6 +62,13 @@ end
 if genlib or genasm or gendsm then
 	require 'deps'
 	require 'generatecode'
+end
+
+-- autogenerate load and store instructions from model
+print 'Generating LDC, LDS, STC and STS from model spec'
+do
+	local imp=require 'implementldst'
+	imp()
 end
 
 -- parse the instructions
@@ -72,6 +90,15 @@ print 'Reading functions from disk'
 for i, file in ipairs(files.listwithname 'functions') do
 	local parse=require 'parsefunction'
 	parse(file.file, file.name)
+end
+
+-- generate proc_t and sr_t if we need to
+if genlib then
+	print 'Generating proc_t and sr_t'
+	local proc=require 'implementproc'
+	proc()
+	local sr=require 'implementsr'
+	sr()
 end
 
 -- generate the implementations if we need to

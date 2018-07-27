@@ -40,6 +40,7 @@ fmt.directories.instructions='string'
 fmt.directories.documentation='string'
 fmt.directories.functions='string'
 fmt.directories.typedefs='string'
+fmt.directories.models='string'
 fmt.directories.output='string'
 
 -- file names
@@ -48,11 +49,13 @@ fmt.filenames.instructions=contains('%%name%%')
 fmt.filenames.documentation=contains('%%name%%')
 fmt.filenames.functions=contains('%%name%%')
 fmt.filenames.typedefs=contains('%%name%%')
+fmt.filenames.models=contains('%%name%%')
 
 -- categories
 fmt.instructions=nameortrue
 fmt.functions=nameortrue
 fmt.typedefs=nameortrue
+fmt.models=nameortrue
 
 inifile.validate(data, fmt)
 -- END file format check

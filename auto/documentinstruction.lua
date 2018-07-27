@@ -13,47 +13,52 @@ local function gendoc(instruction)
 		return docs[instruction.name]
 	end
 	
+	
 	local name=instruction.name:lower():gsub("[a-z]", string.upper, 1)
 	local asm=instruction.asm:gsub(asmnamereg, string.lower)
 	local abstract=instruction.abstract
 	local code=instruction.code
 	local category=instruction.category
 	
-	local doc="# "..name.."\n"
-	doc=doc.."Asm: `"..asm.."`  \n"
-	doc=doc.."Abstract: "..abstract.."  \n"
-	doc=doc.."Category: "..category.."  \n"
-	doc=doc.."Code: `"..code.."`"
+	local doc={}
+	local function d(a)
+		table.insert(doc, a)
+	end
+	
+	d("# "..name.."\n")
+	d("Asm: `"..asm.."`  \n")
+	d("Abstract: "..abstract.."  \n")
+	d("Category: "..category.."  \n")
+	d("Code: `"..code.."`")
 	if not instruction:isdelaylegal() then
-		doc=doc..'  \nBe careful, this instruction cannot be executed in a delay slot'
+		d('  \nBe careful, this instruction cannot be executed in a delay slot')
 	end
 	if not instruction:isuserlegal() then
-		doc=doc..'  \nBe careful, this instruction is a privileged instruction and cannot be executed in user mode'
+		d('  \nBe careful, this instruction is a privileged instruction and cannot be executed in user mode')
 	end
 	if util.contains(instruction.attributes, 'TODO') then
-		doc=doc..'  \nThis instruction is still work in progress and is pretty much guaranteed to crash'
+		d('  \nThis instruction is still work in progress and is pretty much guaranteed to crash')
 	end
 	
 	if #instruction.doc~=0 then
-		doc=doc.."\n\n"
-		doc=doc.."# Misc\n"
+		d("\n\n")
+		d("# Misc\n")
 		for i, line in ipairs(instruction.doc) do
-			doc=doc..line.."  \n"
+			d(line.."  \n")
 		end
-		doc=doc:sub(1, -2)
 	end
 	
 	if instruction:hasimplementation() then
-		doc=doc.."\n\n"
-		doc=doc.."# Implementation\n"
-		doc=doc.."```c\n"
+		d("\n\n")
+		d("# Implementation\n")
+		d("```c\n")
 		for i, line in ipairs(instruction.imp) do
-			doc=doc..line..'\n'
+			d(line..'\n')
 		end
-		doc=doc.."```"
+		d("```")
 	end
 	
-	docs[instruction.name]=doc
+	docs[instruction.name]=table.concat(doc)
 	
 	return doc
 end

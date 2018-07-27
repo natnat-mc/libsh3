@@ -16,18 +16,18 @@ This file contains the top-level dependencies of the designated target, that is,
 This file contains the list of all the templates used by the auto-magical generator. It is responsible for converting a function or type name to a filename on disk.
 
 # Supported models
+See the `models` and `mpus` folders  
 * SH1  
 * SH2  
 * SH3  
 * SH4  
-* SH4A  
+* soon SH4A  
 * potentially SH3-DSP  
 * potentially SH2A if I find a way to handle dual-word instructions  
 
 # ToDo list
 * implement all instructions  
 * then check for the NOP code to invalidate the pipeline  
-* implement the processor correctly  
 * implement peripherals according to the spec  
 * implement assembler and disassembler  
 * implement a debugger  
