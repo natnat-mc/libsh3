@@ -178,17 +178,22 @@ local function generate(target)
 			end
 		end
 		
+		-- get the model to define constants accordingly
+		local curr=models[config 'general.model']
+		set('banks', curr.general.banks)
+		set('mmu', curr.general.mmu)
+		set('fpu', curr.general.fpu)
+		
 		-- define general constants
 		set('progname', config 'general.progname')
 		set('model', config 'general.model')
 		set('version', config 'general.version')
 		set('debug', config 'general.debug')
 		
-		-- define model and MPU macros
+		-- define model macro
 		set(config 'general.model')
 		
 		-- set model inheritance
-		local curr=models[config 'general.model']
 		while curr do
 			set('least_'..curr.general.name)
 			curr=models[curr.general.parent]
